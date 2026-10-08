@@ -1,0 +1,4 @@
+_backup_originals/
+*.py
+.DS_Store
+Thumbs.db

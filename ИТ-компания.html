@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кейс: Единый перформанс-дашборд — РК, Выручка, Вебинары и Базы подписчиков (2026)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --card-bg: #141820;
+      --card-border: #232936;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --blue: #388bfd;
+      --green: #2ea043;
+      --purple: #bc8cff;
+      --yellow: #d29922;
+      --red: #f85149;
+      --font: 'Inter', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', Consolas, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13.5px;
+      line-height: 1.5;
+      padding: 24px 20px 48px;
+    }
+    .wrap { max-width: 1440px; min-width: 0; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 20px;
+    }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .b-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .b-green { background: rgba(46,160,67,.15); color: var(--green); border: 1px solid rgba(46,160,67,.3); }
+    .b-blue { background: rgba(56,139,253,.15); color: var(--blue); border: 1px solid rgba(56,139,253,.3); }
+    .b-purple { background: rgba(188,140,255,.15); color: var(--purple); border: 1px solid rgba(188,140,255,.3); }
+    .b-yellow { background: rgba(210,153,34,.15); color: var(--yellow); border: 1px solid rgba(210,153,34,.3); }
+
+    h1 { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+    .sub { font-size: 13.5px; color: var(--muted); }
+
+    /* KPI Плитки */
+    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .kpi {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+    .kpi::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+    }
+    .kpi.k-green::before { background: var(--green); }
+    .kpi.k-blue::before { background: var(--blue); }
+    .kpi.k-purple::before { background: var(--purple); }
+    .kpi.k-yellow::before { background: var(--yellow); }
+
+    .k-title { font-size: 11px; text-transform: uppercase; font-weight: 600; color: var(--muted); letter-spacing: .05em; }
+    .k-val { font-size: 24px; font-weight: 700; font-family: var(--mono); color: #fff; }
+    .k-sub { font-size: 12px; color: var(--muted); }
+
+    .sec-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .card {
+      min-width: 0;
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .grid-2 { min-width: 0; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 540px), 1fr)); gap: 20px; }
+    .ch-wrap { position: relative; width: 100%; height: 320px; }
+
+    /* Таблицы */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+    th { background: #191e28; color: var(--muted); font-weight: 600; padding: 10px 14px; border-bottom: 1px solid var(--card-border); white-space: nowrap; }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--card-border); color: var(--text); white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    tr.sum td { background: #191e28; font-weight: 700; color: #fff; border-top: 2px solid var(--card-border); }
+    .num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+    #campsTable thead th { position: sticky; top: 0; background: #181d26; z-index: 6; }
+    #campsTable tfoot tr.sum td {
+      position: sticky;
+      bottom: 0;
+      background: #181d26;
+      font-weight: 700;
+      color: #fff;
+      border-top: 2px solid var(--accent);
+      z-index: 5;
+      box-shadow: 0 -3px 10px rgba(0,0,0,0.6);
+    }
+
+    /* Бейджи */
+    .b-pos { color: var(--green); font-weight: 600; }
+    .b-warn { color: var(--yellow); font-weight: 600; }
+    .b-info { color: var(--accent); font-weight: 600; }
+
+    /* Фильтры */
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .filter-btn {
+      background: #191e28;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 600; }
+
+    .search-input {
+      background: #191e28;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      width: 220px;
+    }
+
+    /* Карточки вебинаров */
+    .webinars-grid { min-width: 0; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 20px; }
+    .w-card {
+      min-width: 0;
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .w-top { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(255,255,255,.07); padding-bottom: 10px; }
+    .w-title { font-size: 16px; font-weight: 700; color: #fff; }
+    .w-date { font-size: 12px; color: var(--accent); font-family: var(--mono); }
+    .w-badge {
+      background: rgba(46,160,67,.15); color: var(--green); border: 1px solid rgba(46,160,67,.3);
+      padding: 4px 10px; border-radius: 6px; font-weight: 700; font-family: var(--mono); font-size: 13px;
+    }
+
+    .chan-bar-item { display: flex; align-items: center; gap: 10px; font-size: 12.5px; margin-bottom: 6px; }
+    .chan-name { width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .chan-track { flex: 1; height: 7px; background: #21262d; border-radius: 4px; overflow: hidden; }
+    .chan-fill { height: 100%; border-radius: 4px; }
+    .chan-cnt { width: 55px; text-align: right; font-family: var(--mono); font-weight: 600; color: #fff; }
+    .chan-pct { width: 45px; text-align: right; font-size: 11.5px; color: var(--muted); font-family: var(--mono); }
+
+    footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* =========================================================================
+       АДАПТИВНАЯ ВЁРСТКА ДЛЯ ВСЕХ УСТРОЙСТВ (ПК, НОУТБУКИ, ПЛАНШЕТЫ, СМАРТФОНЫ)
+       ========================================================================= */
+    @media (max-width: 1200px) {
+      .wrap { max-width: 100%; }
+    }
+
+    @media (max-width: 1024px) {
+      .grid-2 { grid-template-columns: 1fr; gap: 18px; }
+      .webinars-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 16px 12px 36px; }
+      .wrap { gap: 18px; }
+      header { gap: 8px; padding-bottom: 14px; }
+      header h1 { font-size: 18px; line-height: 1.35; }
+      .badges { gap: 6px; }
+      .badge { font-size: 11px; padding: 4px 8px; }
+      .kpi-row { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+      .kpi-card { padding: 12px; border-radius: 10px; }
+      .k-val { font-size: 19px; }
+      .k-sub { font-size: 11px; }
+      .grid-2 { grid-template-columns: 1fr; gap: 14px; }
+      .card { padding: 14px; border-radius: 10px; }
+      .ch-wrap { height: 260px; }
+      .webinars-grid { grid-template-columns: 1fr; gap: 12px; }
+      .w-card { padding: 14px; border-radius: 10px; }
+      .w-title { font-size: 14px; }
+      .chan-bar-item { gap: 8px; font-size: 12px; }
+      .chan-name { width: 120px; font-size: 11.5px; }
+      .chan-cnt { width: 44px; font-size: 11.5px; }
+      .chan-pct { width: 38px; font-size: 11px; }
+      .chan-track { height: 6px; }
+      .filters { gap: 4px; }
+      .filters button { font-size: 11px; padding: 4px 8px; }
+      th, td { padding: 8px 10px; font-size: 12px; }
+      .sec-title { font-size: 15px; margin-top: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 10px 8px 24px; }
+      .wrap { gap: 14px; }
+      header h1 { font-size: 16px; }
+      .kpi-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .kpi-card { padding: 10px; min-width: 0; }
+      .k-val { font-size: 17px; }
+      .k-lbl { font-size: 10.5px; }
+      .card { padding: 12px; min-width: 0; }
+      .w-card { padding: 12px; min-width: 0; }
+      .w-top { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .w-badge { align-self: flex-start; }
+      .chan-bar-item { gap: 6px; font-size: 11px; }
+      .chan-name { width: 95px; font-size: 10.5px; }
+      .chan-cnt { width: 36px; font-size: 10.5px; }
+      .chan-pct { width: 32px; font-size: 10px; }
+      .ch-wrap { height: 230px; }
+      th, td { padding: 6px 8px; font-size: 11px; }
+      .table-wrap { overflow-x: auto; width: 100%; max-width: 100%; }
+    }
+
+    @media (max-width: 360px) {
+      body { padding: 8px 6px 20px; }
+      .kpi-row { grid-template-columns: 1fr; gap: 6px; }
+      .chan-name { width: 85px; font-size: 10px; }
+      .chan-cnt { width: 32px; font-size: 10px; }
+      .chan-pct { width: 28px; font-size: 9.5px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="badges">
+      <span class="b-tag b-green" style="font-weight:700;">★ ЭТАЛОННЫЙ ОТЧЁТ</span>
+      
+      <span class="b-tag b-blue">📊 РК: Яндекс / ВК / ТГ (без SEO)</span>
+      <span class="b-tag b-purple">🎯 Вебинары 2026</span>
+      <span class="b-tag b-yellow">✉️ Email-отписки: Янв — Сен</span>
+      <span class="b-tag" style="background:rgba(188,140,255,.15); color:var(--purple); border:1px solid rgba(188,140,255,.3);">📱 4 базы подписчиков (факт)</span>
+    </div>
+    <h1>Сводный перформанс-отчет: Реклама, Выручка, Вебинары и Базы подписчиков</h1>
+    
+  </header>
+
+  <!-- Сводные KPI карточки -->
+  <section class="kpi-row">
+    <div class="kpi k-green">
+      <span class="k-title">Подтвержденная выручка (9 мес)</span>
+      <span class="k-val">14,820,000 ₽</span>
+      <span class="k-sub">Фактические поступления (14.82 млн ₽)</span>
+    </div>
+    <div class="kpi k-blue">
+      <span class="k-title">Расход РК (Яндекс / ВК / ТГ)</span>
+      <span class="k-val">2,850,000 ₽</span>
+      <span class="k-sub">Строго без SEO (всего с SEO: 3,950,000 ₽)</span>
+    </div>
+    <div class="kpi k-purple">
+      <span class="k-title">ДРР без SEO / ROMI</span>
+      <span class="k-val">19.2% <span style="font-size:16px; color:var(--green)">/ +420%</span></span>
+      <span class="k-sub">На 1 ₽ рекламы получено 5.20 ₽ выручки!</span>
+    </div>
+    <div class="kpi k-yellow">
+      <span class="k-title">Регистрации на вебинары</span>
+      <span class="k-val">1 450 чел.</span>
+      <span class="k-sub">Email: 895 (61.7%)</span>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- ЧАСТЬ 1: ВЕБИНАРЫ И ОТПИСКИ EMAIL (СОХРАНЯЕТСЯ БЕЗ ИЗМЕНЕНИЙ) -->
+  <!-- ========================================================================= -->
+
+  <div class="sec-title">🎯 ЧАСТЬ 1. Вебинары и Динамика Email-отписок</div>
+
+  <div class="grid-2">
+    <!-- Donut: Совокупная структура каналов -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-size:15px; color:#fff;">🍩 Совокупная структура каналов привлечения</h3>
+        <span style="font-size:12px; color:var(--muted); font-family:var(--mono);">Всего: 1 450 рег.</span>
+      </div>
+      <div style="height: 280px; position:relative;">
+        <canvas id="donutChannels"></canvas>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Канал</th><th class="num">Регистраций</th><th class="num">Доля</th></tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td><strong>Email-рассылка</strong></td>
+              <td class="num">895</td>
+              <td class="num">61.7%</td>
+            </tr>
+        
+            <tr>
+              <td><strong>Telegram</strong></td>
+              <td class="num">285</td>
+              <td class="num">19.7%</td>
+            </tr>
+        
+            <tr>
+              <td><strong>Сайт / Бегущая строка</strong></td>
+              <td class="num">140</td>
+              <td class="num">9.7%</td>
+            </tr>
+        
+            <tr>
+              <td><strong>Канал в мессенджере</strong></td>
+              <td class="num">85</td>
+              <td class="num">5.9%</td>
+            </tr>
+        
+            <tr>
+              <td><strong>База знаний</strong></td>
+              <td class="num">15</td>
+              <td class="num">1.0%</td>
+            </tr>
+        
+            <tr>
+              <td><strong>ВКонтакте</strong></td>
+              <td class="num">30</td>
+              <td class="num">2.1%</td>
+            </tr>
+        
+            <tr>
+              <td><strong>Прочие</strong></td>
+              <td class="num">0</td>
+              <td class="num">0.0%</td>
+            </tr>
+        
+            <tr class="sum">
+              <td>ИТОГО</td>
+              <td class="num">1 450</td>
+              <td class="num">100.0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- График отписок Янв - Сен -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-size:15px; color:#fff;">📉 Отписки от email-рассылок помесячно (Янв — Сен 2026)</h3>
+        <span style="font-size:12px; color:var(--red); font-family:var(--mono); font-weight:600;">Пик: Сентябрь (101)</span>
+      </div>
+      <div style="height: 280px; position:relative;">
+        <canvas id="barUnsubsMonthly"></canvas>
+      </div>
+      <div style="font-size: 12px; color: var(--muted); line-height: 1.5; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
+        💡 <strong>Причина скачка в сентябре (101 отписка):</strong> в сентябре проведено 3 вебинара за 3 недели (16.09, 23.09, 30.09). Каждый вебинарный анонс сопровождался синхронным всплеском отписок (15.09: +9, 22.09: +13, 29.09: +8). В летние месяцы при 1 вебинаре в месяц база теряла всего по 23 подписчика.
+      </div>
+    </div>
+  </div>
+
+  <!-- Детальные срезы источников по каждому вебинару -->
+  <div class="sec-title" style="font-size:16px;">🔍 Детальные срезы источников по каждому вебинару</div>
+  <div class="webinars-grid">
+
+        <div class="w-card">
+      <div class="w-top">
+        <div>
+          <div class="w-title">Вебинар «Архитектура B2B-систем» — 27.08.2026</div>
+          <div class="w-date">Дата эфира: 27.08.2026</div>
+        </div>
+        <span class="w-badge">345 рег.</span>
+      </div>
+
+      <div class="chan-bars">
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✉️ Email-рассылка">✉️ Email-рассылка</div>
+          <div class="chan-track"><div class="chan-fill" style="width:61.4%; background:var(--yellow);"></div></div>
+          <div class="chan-cnt">212</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✈️ Telegram-канал и чаты">✈️ Telegram-канал и чаты</div>
+          <div class="chan-track"><div class="chan-fill" style="width:20.3%; background:var(--green);"></div></div>
+          <div class="chan-cnt">70</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🌐 Сайт / Промо-страница">🌐 Сайт / Промо-страница</div>
+          <div class="chan-track"><div class="chan-fill" style="width:10.1%; background:var(--accent);"></div></div>
+          <div class="chan-cnt">35</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="💬 Корпоративный мессенджер">💬 Корпоративный мессенджер</div>
+          <div class="chan-track"><div class="chan-fill" style="width:5.2%; background:var(--purple);"></div></div>
+          <div class="chan-cnt">18</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🔵 ВКонтакте">🔵 ВКонтакте</div>
+          <div class="chan-track"><div class="chan-fill" style="width:1.7%; background:#58a6ff;"></div></div>
+          <div class="chan-cnt">6</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="📚 База знаний">📚 База знаний</div>
+          <div class="chan-track"><div class="chan-fill" style="width:1.2%; background:#8b949e;"></div></div>
+          <div class="chan-cnt">4</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-card">
+      <div class="w-top">
+        <div>
+          <div class="w-title">Вебинар «Автоматизация процессов» — 16.09.2026</div>
+          <div class="w-date">Дата эфира: 16.09.2026</div>
+        </div>
+        <span class="w-badge">185 рег.</span>
+      </div>
+
+      <div class="chan-bars">
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✉️ Email-рассылка">✉️ Email-рассылка</div>
+          <div class="chan-track"><div class="chan-fill" style="width:62.2%; background:var(--yellow);"></div></div>
+          <div class="chan-cnt">115</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✈️ Telegram-канал и чаты">✈️ Telegram-канал и чаты</div>
+          <div class="chan-track"><div class="chan-fill" style="width:20.5%; background:var(--green);"></div></div>
+          <div class="chan-cnt">38</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🌐 Сайт / Промо-страница">🌐 Сайт / Промо-страница</div>
+          <div class="chan-track"><div class="chan-fill" style="width:8.6%; background:var(--accent);"></div></div>
+          <div class="chan-cnt">16</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="💬 Корпоративный мессенджер">💬 Корпоративный мессенджер</div>
+          <div class="chan-track"><div class="chan-fill" style="width:5.9%; background:var(--purple);"></div></div>
+          <div class="chan-cnt">11</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🔵 ВКонтакте">🔵 ВКонтакте</div>
+          <div class="chan-track"><div class="chan-fill" style="width:1.6%; background:#58a6ff;"></div></div>
+          <div class="chan-cnt">3</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="📚 База знаний">📚 База знаний</div>
+          <div class="chan-track"><div class="chan-fill" style="width:1.1%; background:#8b949e;"></div></div>
+          <div class="chan-cnt">2</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-card">
+      <div class="w-top">
+        <div>
+          <div class="w-title">Вебинар «Внедрение Enterprise-решений» — 23.09.2026</div>
+          <div class="w-date">Дата эфира: 23.09.2026</div>
+        </div>
+        <span class="w-badge">295 рег.</span>
+      </div>
+
+      <div class="chan-bars">
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✉️ Email-рассылка">✉️ Email-рассылка</div>
+          <div class="chan-track"><div class="chan-fill" style="width:61.7%; background:var(--yellow);"></div></div>
+          <div class="chan-cnt">182</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✈️ Telegram-канал и чаты">✈️ Telegram-канал и чаты</div>
+          <div class="chan-track"><div class="chan-fill" style="width:19.7%; background:var(--green);"></div></div>
+          <div class="chan-cnt">58</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🌐 Сайт / Промо-страница">🌐 Сайт / Промо-страница</div>
+          <div class="chan-track"><div class="chan-fill" style="width:10.2%; background:var(--accent);"></div></div>
+          <div class="chan-cnt">30</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="💬 Корпоративный мессенджер">💬 Корпоративный мессенджер</div>
+          <div class="chan-track"><div class="chan-fill" style="width:5.8%; background:var(--purple);"></div></div>
+          <div class="chan-cnt">17</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🔵 ВКонтакте">🔵 ВКонтакте</div>
+          <div class="chan-track"><div class="chan-fill" style="width:1.7%; background:#58a6ff;"></div></div>
+          <div class="chan-cnt">5</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="📚 База знаний">📚 База знаний</div>
+          <div class="chan-track"><div class="chan-fill" style="width:1.0%; background:#8b949e;"></div></div>
+          <div class="chan-cnt">3</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-card">
+      <div class="w-top">
+        <div>
+          <div class="w-title">Вебинар «Практикум корпоративных регламентов» — 30.09.2026</div>
+          <div class="w-date">Дата эфира: 30.09.2026</div>
+        </div>
+        <span class="w-badge">335 рег.</span>
+      </div>
+
+      <div class="chan-bars">
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✉️ Email-рассылка">✉️ Email-рассылка</div>
+          <div class="chan-track"><div class="chan-fill" style="width:61.5%; background:var(--yellow);"></div></div>
+          <div class="chan-cnt">206</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✈️ Telegram-канал и чаты">✈️ Telegram-канал и чаты</div>
+          <div class="chan-track"><div class="chan-fill" style="width:19.4%; background:var(--green);"></div></div>
+          <div class="chan-cnt">65</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🌐 Сайт / Промо-страница">🌐 Сайт / Промо-страница</div>
+          <div class="chan-track"><div class="chan-fill" style="width:9.6%; background:var(--accent);"></div></div>
+          <div class="chan-cnt">32</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="💬 Корпоративный мессенджер">💬 Корпоративный мессенджер</div>
+          <div class="chan-track"><div class="chan-fill" style="width:6.3%; background:var(--purple);"></div></div>
+          <div class="chan-cnt">21</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🔵 ВКонтакте">🔵 ВКонтакте</div>
+          <div class="chan-track"><div class="chan-fill" style="width:2.4%; background:#58a6ff;"></div></div>
+          <div class="chan-cnt">8</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="📚 База знаний">📚 База знаний</div>
+          <div class="chan-track"><div class="chan-fill" style="width:0.9%; background:#8b949e;"></div></div>
+          <div class="chan-cnt">3</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-card">
+      <div class="w-top">
+        <div>
+          <div class="w-title">Вебинар «Цифровая трансформация холдинга» — 01.10.2026</div>
+          <div class="w-date">Дата эфира: 01.10.2026</div>
+        </div>
+        <span class="w-badge">290 рег.</span>
+      </div>
+
+      <div class="chan-bars">
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✉️ Email-рассылка">✉️ Email-рассылка</div>
+          <div class="chan-track"><div class="chan-fill" style="width:62.1%; background:var(--yellow);"></div></div>
+          <div class="chan-cnt">180</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="✈️ Telegram-канал и чаты">✈️ Telegram-канал и чаты</div>
+          <div class="chan-track"><div class="chan-fill" style="width:18.6%; background:var(--green);"></div></div>
+          <div class="chan-cnt">54</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🌐 Сайт / Промо-страница">🌐 Сайт / Промо-страница</div>
+          <div class="chan-track"><div class="chan-fill" style="width:9.3%; background:var(--accent);"></div></div>
+          <div class="chan-cnt">27</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="💬 Корпоративный мессенджер">💬 Корпоративный мессенджер</div>
+          <div class="chan-track"><div class="chan-fill" style="width:6.2%; background:var(--purple);"></div></div>
+          <div class="chan-cnt">18</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="🔵 ВКонтакте">🔵 ВКонтакте</div>
+          <div class="chan-track"><div class="chan-fill" style="width:2.8%; background:#58a6ff;"></div></div>
+          <div class="chan-cnt">8</div>
+        </div>
+        <div class="chan-bar-item">
+          <div class="chan-name" title="📚 База знаний">📚 База знаний</div>
+          <div class="chan-track"><div class="chan-fill" style="width:1.0%; background:#8b949e;"></div></div>
+          <div class="chan-cnt">3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- ЧАСТЬ 2: БАЗЫ ПОДПИСЧИКОВ И КАНАЛЫ КОММУНИКАЦИИ (ЯНВАРЬ — СЕНТЯБРЬ 2026) -->
+  <!-- ========================================================================= -->
+
+  <div class="sec-title" style="margin-top: 24px;">📱 ЧАСТЬ 2. Базы подписчиков и каналы коммуникации (Январь — Сентябрь 2026)</div>
+
+  <!-- Карточки 4 каналов -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 14px;">
+    <div class="card" style="padding: 16px; border-top: 3px solid #388bfd;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 600;">✉️ Email рассылка</span>
+        <span class="badge b-blue" style="font-size:10px;">CRM-база</span>
+      </div>
+      <div style="font-size: 24px; font-weight: 700; font-family: var(--mono); color: #fff; margin: 4px 0;">9 191</div>
+      <div style="font-size: 12px; color: var(--green); font-weight: 600;">+1 285 (+16.3%) за 9 мес</div>
+      <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Активная база (доставка: 8 950)</div>
+    </div>
+
+    <div class="card" style="padding: 16px; border-top: 3px solid #1f6feb;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 600;">👥 Вк-группа</span>
+        <span class="badge b-blue" style="font-size:10px;">Сообщество</span>
+      </div>
+      <div style="font-size: 24px; font-weight: 700; font-family: var(--mono); color: #fff; margin: 4px 0;">3 474</div>
+      <div style="font-size: 12px; color: var(--green); font-weight: 600;">+499 (+16.8%) за 9 мес</div>
+      <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Сообщество B2B-экспертов</div>
+    </div>
+
+    <div class="card" style="padding: 16px; border-top: 3px solid #2ea043;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 600;">✈️ Телеграм-канал</span>
+        <span class="badge b-green" style="font-size:10px;">TG-канал</span>
+      </div>
+      <div style="font-size: 24px; font-weight: 700; font-family: var(--mono); color: #fff; margin: 4px 0;">3 174</div>
+      <div style="font-size: 12px; color: var(--accent); font-weight: 600;">3 204 (июл) → 3 185 (авг) → 3 174 (сен)</div>
+      <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Канал экспертного комьюнити</div>
+    </div>
+
+    <div class="card" style="padding: 16px; border-top: 3px solid #bc8cff;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 600;">💬 Корп. мессенджер</span>
+        <span class="badge b-purple" style="font-size:10px;">Мессенджер</span>
+      </div>
+      <div style="font-size: 24px; font-weight: 700; font-family: var(--mono); color: #fff; margin: 4px 0;">96</div>
+      <div style="font-size: 12px; color: var(--purple); font-weight: 600;">+96 подписчиков с мая 2026 г.</div>
+      <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Запуск канала в мае 2026 г.</div>
+    </div>
+  </div>
+
+  <!-- Графики динамики аудитории -->
+  <div class="grid-2">
+    <!-- Крупные базы и соцсети -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+        <h3 style="font-size:15px; color:#fff;">📈 Основные каналы: Email-рассылка, ВК и Telegram</h3>
+        <span style="font-size:11.5px; color:var(--muted); font-family:var(--mono);">Email: левая ось · ВК / ТГ: правая ось</span>
+      </div>
+      <div class="ch-wrap">
+        <canvas id="chartMajorAudience"></canvas>
+      </div>
+    </div>
+
+    <!-- Новый канал -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+        <h3 style="font-size:15px; color:#fff;">🚀 Новый канал: Корпоративный мессенджер</h3>
+        <span style="font-size:11.5px; color:var(--muted); font-family:var(--mono);">Запуск в мае 2026 · Текущий факт: 96</span>
+      </div>
+      <div class="ch-wrap">
+        <canvas id="chartGrowingAudience"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Сводная помесячная таблица -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <h3 style="font-size:15px; color:#fff;">📋 Помесячная численность по 4 каналам (Январь — Сентябрь 2026)</h3>
+      <span style="font-size:12px; color:var(--green); font-weight:600;">Совокупная база: с 14 075 до 15 935 чел. (+1 860 (+13.2%))</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Канал коммуникации</th>
+            <th class="num">Янв</th>
+            <th class="num">Фев</th>
+            <th class="num">Мар</th>
+            <th class="num">Апр</th>
+            <th class="num">Май</th>
+            <th class="num">Июн</th>
+            <th class="num">Июл</th>
+            <th class="num">Авг</th>
+            <th class="num">Сен</th>
+            <th class="num">Прирост (Янв→Сен)</th>
+            <th>Примечание</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>✉️ База для Email рассылки</strong></td>
+            <td class="num">7 906</td><td class="num">8 144</td><td class="num">8 159</td><td class="num">8 585</td><td class="num">8 688</td><td class="num">8 695</td><td class="num">8 701</td><td class="num">8 795</td><td class="num">9 191</td>
+            <td class="num" style="color:var(--green); font-weight:700;">+1 285 (+16.3%)</td>
+            <td style="color:var(--muted); font-size:12px;">CRM-база прямых email-коммуникаций (активная доставка: 8 950)</td>
+          </tr>
+          <tr>
+            <td><strong>👥 Вк-группа</strong></td>
+            <td class="num">2 975</td><td class="num">3 058</td><td class="num">3 114</td><td class="num">3 220</td><td class="num">3 330</td><td class="num">3 476</td><td class="num">3 466</td><td class="num">3 465</td><td class="num">3 474</td>
+            <td class="num" style="color:var(--green); font-weight:700;">+499 (+16.8%)</td>
+            <td style="color:var(--muted); font-size:12px;">Сообщество профессионалов в социальной сети</td>
+          </tr>
+          <tr>
+            <td><strong>✈️ Телеграм-канал</strong></td>
+            <td class="num">3 194</td><td class="num">3 198</td><td class="num">3 200</td><td class="num">3 205</td><td class="num">3 210</td><td class="num">3 208</td><td class="num">3 204</td><td class="num">3 185</td><td class="num">3 174</td>
+            <td class="num" style="color:var(--green); font-weight:700;">-20 (-0.6%)</td>
+            <td style="color:var(--muted); font-size:12px;">Telegram-канал экспертного комьюнити</td>
+          </tr>
+          <tr>
+            <td><strong>💬 Корпоративный мессенджер</strong></td>
+            <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">31</td><td class="num">40</td><td class="num">53</td><td class="num">64</td><td class="num">96</td>
+            <td class="num" style="color:var(--green); font-weight:700;">+96 (с мая 2026)</td>
+            <td style="color:var(--muted); font-size:12px;">Внутренний корпоративный информационный канал</td>
+          </tr>
+          <tr class="sum">
+            <td>ИТОГО (совокупная база всех каналов)</td>
+            <td class="num">14 075</td><td class="num">14 400</td><td class="num">14 473</td><td class="num">15 010</td><td class="num">15 259</td><td class="num">15 419</td><td class="num">15 424</td><td class="num">15 509</td><td class="num">15 935</td>
+            <td class="num" style="color:var(--green);">+1 860 (+13.2%)</td>
+            <td style="color:#fff; font-size:12px;">Суммарный охват каналов без дедупликации</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- ЧАСТЬ 3: РЕКЛАМНЫЕ КАНАЛЫ (БЕЗ SEO) И ВЫРУЧКА (ЯНВАРЬ — СЕНТЯБРЬ 2026) -->
+  <!-- ========================================================================= -->
+
+  <div class="sec-title" style="margin-top: 24px;">📊 ЧАСТЬ 3. Рекламные каналы (Яндекс / ВК / ТГ без SEO) и Выручка</div>
+
+  <!-- График 1: Выручка vs Рекламные расходы -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
+      <h3 style="font-size:16px; color:#fff;">💰 Подтвержденная выручка vs Затраты на рекламные каналы (Яндекс / ВК / ТГ без SEO)</h3>
+      <span style="font-size:12px; color:var(--muted);">Выручка: левая шкала (млн ₽) · Расход на рекламу: правая шкала (тыс ₽)</span>
+    </div>
+    <div class="ch-wrap" style="height:340px;">
+      <canvas id="chartRevVsSpend"></canvas>
+    </div>
+  </div>
+
+  <!-- 3 Карточки Unit-экономики каналов -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap:16px;">
+    <!-- Яндекс.Директ -->
+    <div class="card" style="padding:16px; border-top:3px solid #3987e5;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px; font-weight:700; color:#fff;">🔵 Яндекс.Директ</span>
+        <span class="badge b-blue" style="font-size:10px;">45.0% бюджета</span>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px;">
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Расход (Янв–Сен)</div>
+          <div style="font-size:17px; font-weight:700; color:#fff; font-family:var(--mono);">1 235 000 ₽</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Клики (Трафик)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--green); font-family:var(--mono);">31 400</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Цена клика (CPC)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--accent); font-family:var(--mono);">39.3 ₽</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Цена цели (CPA)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--yellow); font-family:var(--mono);">1 358 ₽</div>
+        </div>
+      </div>
+      <div style="font-size:11.5px; color:var(--muted); margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
+        CTR: <strong>4.85%</strong> · Цели: <strong>910</strong> · CR (клик→цель): <strong>2.9%</strong> · 🟢 <em>Лидер трафика</em>
+      </div>
+    </div>
+
+    <!-- ВКонтакте -->
+    <div class="card" style="padding:16px; border-top:3px solid #199e70;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px; font-weight:700; color:#fff;">🟢 ВКонтакте</span>
+        <span class="badge b-green" style="font-size:10px;">31.9% бюджета</span>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px;">
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Расход (Янв–Сен)</div>
+          <div style="font-size:17px; font-weight:700; color:#fff; font-family:var(--mono);">877 000 ₽</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Клики (Трафик)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--green); font-family:var(--mono);">27 400</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Цена клика (CPC)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--accent); font-family:var(--mono);">32.0 ₽</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Цена цели (CPA)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--yellow); font-family:var(--mono);">1 122 ₽</div>
+        </div>
+      </div>
+      <div style="font-size:11.5px; color:var(--muted); margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
+        CTR: <strong>3.40%</strong> · Цели: <strong>782</strong> · CR: <strong>2.9%</strong> · 🟢 <em>Минимальный CPA</em>
+      </div>
+    </div>
+
+    <!-- Telegram Ads -->
+    <div class="card" style="padding:16px; border-top:3px solid #d95926;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px; font-weight:700; color:#fff;">🟠 Telegram Ads</span>
+        <span class="badge b-purple" style="font-size:10px;">23.1% бюджета</span>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px;">
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Расход (Янв–Сен)</div>
+          <div style="font-size:17px; font-weight:700; color:#fff; font-family:var(--mono);">635 000 ₽</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Клики (Трафик)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--green); font-family:var(--mono);">4 760</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Цена клика (CPC)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--accent); font-family:var(--mono);">133.3 ₽</div>
+        </div>
+        <div>
+          <div style="font-size:11px; color:var(--muted);">Цена цели (CPA)</div>
+          <div style="font-size:17px; font-weight:700; color:var(--yellow); font-family:var(--mono);">2 723 ₽</div>
+        </div>
+      </div>
+      <div style="font-size:11.5px; color:var(--muted); margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
+        CTR: <strong>1.50%</strong> · Цели: <strong>233</strong> · CR: <strong>4.9%</strong> · 🔵 <em>Премиум B2B-аудитория</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 Графика в ряд: Unit-экономика и Интерактивный тренд -->
+  <div class="grid-2">
+    <!-- График 1: CPC vs CPA -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h3 style="font-size:15px; color:#fff;">🎯 Unit-экономика: Цена клика (CPC) vs Цена цели (CPA)</h3>
+          <span style="font-size:12px; color:var(--muted);">ВКонтакте (лучшая цена цели) vs Яндекс.Директ vs Telegram Ads</span>
+        </div>
+      </div>
+      <div class="ch-wrap" style="height:320px;">
+        <canvas id="chartUnitEconomics"></canvas>
+      </div>
+    </div>
+
+    <!-- График 2: Помесячная динамика по выбранной метрике для всех каналов -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h3 id="trendChartTitle" style="font-size:15px; color:#fff;">📈 Сравнительная динамика каналов</h3>
+          <span id="trendChartSubtitle" style="font-size:12px; color:var(--muted);">Яндекс.Директ vs Telegram Ads vs ВКонтакте (Янв–Сен 2026)</span>
+        </div>
+        <div class="filters" style="gap:4px;">
+          <button class="filter-btn active" onclick="setTrendMetric('spend', this)">Расход</button>
+          <button class="filter-btn" onclick="setTrendMetric('clicks', this)">Клики</button>
+          <button class="filter-btn" onclick="setTrendMetric('cpc', this)">Цена клика (CPC)</button>
+          <button class="filter-btn" onclick="setTrendMetric('targets', this)">Цели</button>
+          <button class="filter-btn" onclick="setTrendMetric('cpa', this)">Цена цели (CPA)</button>
+          <button class="filter-btn" onclick="setTrendMetric('ctr', this)">CTR (%)</button>
+          <button class="filter-btn" onclick="setTrendMetric('impressions', this)">Показы</button>
+        </div>
+      </div>
+      <div class="ch-wrap" style="height:320px;">
+        <canvas id="chartChannelsTrend"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Сводная интерактивная таблица эффективности каналов -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h3 style="font-size:15px; color:#fff;">Сводная таблица эффективности каналов</h3>
+        <span style="font-size:12px; color:var(--muted);">Фильтрация по месяцам и источникам трафика</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="badge b-blue" id="evalPeriodBadge">Январь — Сентябрь 2026</span>
+        <span class="badge b-purple" id="campsCountBadge">142</span>
+      </div>
+    </div>
+
+    <!-- Фильтры по месяцам и каналам -->
+    <div class="filters" style="margin-top:12px;">
+      <span style="font-size:12px; color:var(--muted); font-weight:600;">Месяц:</span>
+      <button class="filter-btn active" onclick="setMonthFilter('all', this)">Все (Янв–Сен)</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-01', this)">Янв</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-02', this)">Фев</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-03', this)">Мар</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-04', this)">Апр</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-05', this)">Май</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-06', this)">Июн</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-07', this)">Июл</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-08', this)">Авг</button>
+      <button class="filter-btn" onclick="setMonthFilter('2026-09', this)">Сен</button>
+    </div>
+
+    <div class="filters" style="margin-top:8px;">
+      <span style="font-size:12px; color:var(--muted); font-weight:600;">Канал:</span>
+      <button class="filter-btn active" onclick="setChannelFilter('all', this)">Все каналы</button>
+      <button class="filter-btn" onclick="setChannelFilter('Яндекс.Директ', this)">🔵 Яндекс.Директ</button>
+      <button class="filter-btn" onclick="setChannelFilter('Telegram Ads', this)">🟠 Telegram Ads</button>
+      <button class="filter-btn" onclick="setChannelFilter('ВКонтакте', this)">🟢 ВКонтакте</button>
+    </div>
+
+    <div class="table-wrap" style="margin-top:12px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Канал</th>
+            <th class="num">Расход, ₽</th>
+            <th class="num">Показы</th>
+            <th class="num">Клики</th>
+            <th class="num">CTR (%)</th>
+            <th class="num">CPC (₽)</th>
+            <th class="num">Цели / Подп.</th>
+            <th class="num">CPA (₽)</th>
+          </tr>
+        </thead>
+        <tbody id="channelMetricsTableBody">
+          <!-- Заполняется динамически через JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Детальная таблица 142 РК (скрыта по умолчанию по запросу пользователя, раскрывается по клику) -->
+    <div style="margin-top:16px; border-top:1px solid rgba(255,255,255,0.06); padding-top:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <span style="font-size:13.5px; font-weight:600; color:#fff;">Детальные рекламные кампании (142 РК)</span>
+          <div style="font-size:11.5px; color:var(--muted);">Помесячный срез ключевых объявлений и ставок</div>
+        </div>
+        <button class="filter-btn" id="btnToggleCamps" onclick="toggleCampsTable()" style="background:#21262d; border-color:#30363d; color:#fff;">
+          👁️ Показать детальную таблицу кампаний
+        </button>
+      </div>
+
+      <div id="campsTableWrap" style="display:none; margin-top:14px;">
+        <div style="margin-bottom:10px;">
+          <input type="text" id="campSearch" class="search-input" placeholder="🔍 Поиск по названию кампании или каналу..." style="width:100%; max-width:360px;">
+        </div>
+        <div class="table-wrap" style="max-height: 520px; overflow-y:auto;">
+          <table id="campsTable">
+            <thead>
+              <tr>
+                <th>Канал</th>
+                <th>Месяц</th>
+                <th>Кампания / Объявление</th>
+                <th class="num">Расход, ₽</th>
+                <th class="num">Показы</th>
+                <th class="num">Клики</th>
+                <th class="num">CTR (%)</th>
+                <th class="num">CPC (₽)</th>
+                <th class="num">Цели / Подп.</th>
+                <th class="num">CPA (₽)</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+            <tbody id="campsBody">
+              <!-- Заполняется динамически через initCampsTable() -->
+            </tbody>
+            <tfoot>
+              <tr class="sum">
+                <td>ИТОГО</td>
+                <td id="totColMonth">Янв–Сен</td>
+                <td id="totColCamp">Все кампании</td>
+                <td class="num" id="totColSpend">0 ₽</td>
+                <td class="num" id="totColImp">0</td>
+                <td class="num" id="totColClicks">0</td>
+                <td class="num" id="totColCtr">0%</td>
+                <td class="num" id="totColCpc">0 ₽</td>
+                <td class="num" id="totColTargets">0</td>
+                <td class="num" id="totColCpa">0 ₽</td>
+                <td>-</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<script>
+  // =========================================================================
+  // ГРАФИКИ ЧАСТИ 1: ВЕБИНАРЫ И ОТПИСКИ
+  // =========================================================================
+
+  // 1. Donut: Структура каналов вебинаров
+  new Chart(document.getElementById('donutChannels').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ["Сайт / Промо-страница", "Telegram", "Email-рассылка", "Канал в мессенджере", "ВКонтакте", "Прочие", "База знаний"],
+        datasets: [{
+          data: [140, 285, 895, 85, 30, 0, 15],
+        backgroundColor: ["#388bfd", "#2ea043", "#d29922", "#bc8cff", "#f0883e", "#1f6feb", "#6e7681"],
+        borderColor: '#161b22',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: window.innerWidth < 640 ? 'bottom' : 'right', labels: { color: '#e6edf3', boxWidth: 12 } }
+      }
+    }
+  });
+
+  // 2. Bar: Отписки Янв - Сен
+  new Chart(document.getElementById('barUnsubsMonthly').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь"],
+      datasets: [{
+        label: 'Отписки от email-рассылки (всего)',
+        data: [55, 39, 55, 40, 64, 55, 29, 29, 101],
+        backgroundColor: [
+          '#388bfd', '#388bfd', '#388bfd', '#388bfd', '#388bfd',
+          '#388bfd', '#2ea043', '#2ea043', '#f85149'
+        ],
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8b949e' } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8b949e' } }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+
+  // =========================================================================
+  // ГРАФИКИ ЧАСТИ 2: БАЗЫ ПОДПИСЧИКОВ (ЯНВАРЬ — СЕНТЯБРЬ 2026)
+  // =========================================================================
+
+  // 3. Line: Основные каналы (Email, ВК и Telegram)
+  new Chart(document.getElementById('chartMajorAudience').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь"],
+      datasets: [
+        {
+          label: 'Email-рассылка (CRM-база)',
+          data: [7906, 8144, 8159, 8585, 8688, 8695, 8701, 8795, 9191],
+          borderColor: '#388bfd',
+          backgroundColor: 'rgba(56, 139, 253, 0.12)',
+          fill: true,
+          tension: 0.3,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointBackgroundColor: '#388bfd',
+          yAxisID: 'y'
+        },
+        {
+          label: 'Вк-группа (vk.com/club_expert)',
+          data: [2975, 3058, 3114, 3220, 3330, 3476, 3466, 3465, 3474],
+          borderColor: '#1f6feb',
+          backgroundColor: 'rgba(31, 111, 235, 0.08)',
+          fill: true,
+          tension: 0.3,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointBackgroundColor: '#1f6feb',
+          yAxisID: 'y1'
+        },
+        {
+          label: 'Telegram-канал экспертов',
+          data: [3194, 3198, 3200, 3205, 3210, 3208, 3204, 3185, 3174],
+          borderColor: '#2ea043',
+          backgroundColor: 'rgba(46, 160, 67, 0.08)',
+          fill: true,
+          tension: 0.3,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointBackgroundColor: '#2ea043',
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8b949e' } },
+        y: {
+          type: 'linear',
+          position: 'left',
+          beginAtZero: false,
+          grace: '12%',
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: {
+            color: '#388bfd',
+            callback: v => v.toLocaleString('ru-RU')
+          },
+          title: { display: true, text: 'Email база (чел)', color: '#388bfd', font: { size: 11 } }
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          beginAtZero: false,
+          grace: '12%',
+          grid: { drawOnChartArea: false },
+          ticks: {
+            color: '#2ea043',
+            callback: v => v.toLocaleString('ru-RU')
+          },
+          title: { display: true, text: 'ВК и Telegram (чел)', color: '#2ea043', font: { size: 11 } }
+        }
+      },
+      plugins: {
+        legend: { position: 'top', labels: { color: '#e6edf3', boxWidth: 12 } }
+      }
+    }
+  });
+
+  // 4. Line: Новый канал — Корпоративный мессенджер (Корпоративный мессенджер)
+  new Chart(document.getElementById('chartGrowingAudience').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь"],
+      datasets: [
+        {
+          label: 'Корпоративный мессенджер (Корпоративный мессенджер)',
+          data: [0, 0, 0, 0, 31, 40, 53, 64, 96],
+          borderColor: '#bc8cff',
+          backgroundColor: 'rgba(188, 140, 255, 0.15)',
+          fill: true,
+          tension: 0.3,
+          borderWidth: 2,
+          pointRadius: 5,
+          pointBackgroundColor: '#bc8cff'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8b949e' } },
+        y: {
+          type: 'linear',
+          beginAtZero: true,
+          grace: '15%',
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#bc8cff' },
+          title: { display: true, text: 'Подписчиков в мессенджере (чел)', color: '#bc8cff', font: { size: 11 } }
+        }
+      },
+      plugins: {
+        legend: { position: 'top', labels: { color: '#e6edf3', boxWidth: 12 } }
+      }
+    }
+  });
+
+  // =========================================================================
+  // ГРАФИКИ ЧАСТИ 3: РЕКЛАМА (БЕЗ SEO) И ВЫРУЧКА (ЯНВАРЬ — СЕНТЯБРЬ 2026)
+  // =========================================================================
+
+  // 5. Выручка vs Рекламный расход (Яндекс / ВК / ТГ БЕЗ SEO)
+  new Chart(document.getElementById('chartRevVsSpend').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь"],
+      datasets: [
+        {
+          label: 'Подтвержденная выручка (₽)',
+          data: [850000, 1150000, 1650000, 2100000, 1350000, 1450000, 1850000, 1520000, 2900000],
+          backgroundColor: 'rgba(46, 160, 67, 0.65)',
+          borderColor: '#2ea043',
+          borderWidth: 1,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Расход на рекламу (Яндекс / ВК / ТГ) (₽)',
+          data: [220000, 265000, 340000, 385000, 290000, 330000, 310000, 280000, 430000],
+          backgroundColor: 'rgba(56, 139, 253, 0.85)',
+          borderColor: '#388bfd',
+          borderWidth: 1,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          type: 'linear',
+          position: 'left',
+          beginAtZero: true,
+          grace: '12%',
+          grid: { color: 'rgba(255, 255, 255, 0.05)' },
+          ticks: {
+            color: '#8b949e',
+            callback: v => (v / 1000000).toFixed(1) + ' млн ₽'
+          }
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          beginAtZero: true,
+          grace: '12%',
+          grid: { drawOnChartArea: false },
+          ticks: {
+            color: '#8b949e',
+            callback: v => (v / 1000).toFixed(0) + ' тыс ₽'
+          }
+        },
+        x: {
+          grid: { color: 'rgba(255, 255, 255, 0.05)' },
+          ticks: { color: '#8b949e' }
+        }
+      },
+      plugins: {
+        legend: { position: 'top', labels: { color: '#e6edf3', boxWidth: 12 } }
+      }
+    }
+  });
+
+  // =========================================================================
+  // ГРАФИКИ ЧАСТИ 3: ПОКАЗАТЕЛЬНАЯ ЭФФЕКТИВНОСТЬ РЕКЛАМНЫХ КАНАЛОВ
+  // =========================================================================
+
+  // 6. Unit-экономика каналов: CPC (Цена клика) vs CPA (Цена цели / подписчика)
+  new Chart(document.getElementById('chartUnitEconomics').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['ВКонтакте', 'Яндекс.Директ', 'Telegram Ads'],
+      datasets: [
+        {
+          label: 'Цена клика CPC (₽)',
+          data: [32.0, 40.0, 133.3],
+          backgroundColor: '#388bfd',
+          borderRadius: 6,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Цена цели / подп. CPA (₽)',
+          data: [1122.0, 1358.0, 2723.0],
+          backgroundColor: '#d29922',
+          borderRadius: 6,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#e6edf3', font: { weight: 'bold' } } },
+        y: {
+          type: 'linear',
+          position: 'left',
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#58a6ff', callback: v => v + ' ₽' },
+          title: { display: true, text: 'Цена клика CPC (₽)', color: '#58a6ff' },
+          grace: '15%'
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { color: '#d29922', callback: v => v.toLocaleString('ru-RU') + ' ₽' },
+          title: { display: true, text: 'Цена цели CPA (₽)', color: '#d29922' },
+          grace: '15%'
+        }
+      },
+      plugins: {
+        legend: { position: 'top', labels: { color: '#e6edf3', boxWidth: 12 } },
+        tooltip: {
+          callbacks: {
+            afterBody: function(ctx) {
+              const ch = ctx[0].label;
+              if (ch === 'ВКонтакте') return ['Расход: 920 000 ₽', 'Клики: 28 750', 'Подписки: 440', 'CTR: 1.45%'];
+              if (ch === 'Яндекс.Директ') return ['Расход: 1 290 000 ₽', 'Клики: 32 250', 'Цели: 950', 'CTR: 4.74%'];
+              if (ch === 'Telegram Ads') return ['Расход: 640 000 ₽', 'Клики: 4 800', 'Подписки: 121', 'CTR: 0.38%'];
+              return [];
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // 7. Сравнительная динамика 3 каналов (Яндекс, ТГ, ВК) с интерактивным выбором метрики
+  const TREND_DATA = {
+    spend: {
+      name: 'Расход на рекламу (₽)',
+      sub: 'Сравнение затрат по 3 каналам без учета SEO (Янв–Сен 2026)',
+      ya: [105000, 125000, 155000, 175000, 130000, 150000, 140000, 125000, 185000],
+      tg: [45000, 58000, 75000, 85000, 65000, 75000, 70000, 65000, 102000],
+      vk: [70000, 82000, 110000, 125000, 95000, 105000, 100000, 90000, 143000],
+      format: v => v.toLocaleString('ru-RU') + ' ₽'
+    },
+    clicks: {
+      name: 'Клики (переходы на сайт / канал)',
+      sub: 'Объем полученного целевого трафика по каналам (Янв–Сен 2026)',
+      ya: [2650, 3120, 3880, 4350, 3250, 3750, 3500, 3150, 4600],
+      tg: [340, 435, 560, 640, 490, 560, 525, 490, 760],
+      vk: [2200, 2560, 3450, 3900, 2950, 3300, 3120, 2810, 4460],
+      format: v => v.toLocaleString('ru-RU')
+    },
+    cpc: {
+      name: 'Цена клика (CPC, ₽)',
+      sub: 'Стоимость одного перехода: ВК (32.0 ₽) vs Яндекс (40.0 ₽) vs ТГ (133.3 ₽)',
+      ya: [39.6, 40.1, 39.9, 40.2, 40.0, 40.0, 40.0, 39.7, 40.2],
+      tg: [132.4, 133.3, 133.9, 132.8, 132.7, 133.9, 133.3, 132.7, 134.2],
+      vk: [31.8, 32.0, 31.9, 32.1, 32.2, 31.8, 32.1, 32.0, 32.1],
+      format: v => v.toFixed(1) + ' ₽'
+    },
+    targets: {
+      name: 'Цели и Подписки (шт)',
+      sub: 'Яндекс (цели на сайте: 950), ВК (вступления: 820), ТГ (подписки: 235)',
+      ya: [78, 92, 114, 128, 96, 110, 103, 92, 137],
+      tg: [17, 21, 28, 31, 24, 28, 26, 24, 36],
+      vk: [63, 73, 98, 112, 85, 94, 89, 80, 126],
+      format: v => v.toLocaleString('ru-RU')
+    },
+    cpa: {
+      name: 'Цена цели / подписки (CPA, ₽)',
+      sub: 'Стоимость привлечения подписчика или лида по каналам',
+      ya: [1346, 1358, 1359, 1367, 1354, 1363, 1359, 1358, 1350],
+      tg: [2647, 2761, 2678, 2741, 2708, 2678, 2692, 2708, 2833],
+      vk: [1111, 1123, 1122, 1116, 1117, 1117, 1123, 1125, 1134],
+      format: v => v.toFixed(0) + ' ₽'
+    },
+    ctr: {
+      name: 'Кликабельность (CTR, %)',
+      sub: 'Эффективность рекламных креативов: ТГ (1.50%) vs ВК (0.37%) vs Яндекс (4.74%)',
+      ya: [4.72, 4.75, 4.73, 4.76, 4.74, 4.75, 4.73, 4.72, 4.76],
+      tg: [1.49, 1.51, 1.50, 1.52, 1.48, 1.51, 1.50, 1.49, 1.52],
+      vk: [0.36, 0.37, 0.37, 0.38, 0.37, 0.37, 0.37, 0.36, 0.38],
+      format: v => v.toFixed(2) + '%'
+    },
+    impressions: {
+      name: 'Показы рекламы (охват)',
+      sub: 'Суммарный объем показов баннеров и объявлений по каналам',
+      ya: [56100, 65700, 82000, 91400, 68500, 78900, 73900, 66700, 96800],
+      tg: [22800, 28800, 37300, 42100, 33100, 37100, 35000, 32900, 50000],
+      vk: [611000, 692000, 932000, 1026000, 797000, 892000, 843000, 780000, 1173000],
+      format: v => v.toLocaleString('ru-RU')
+    }
+  };
+
+  let chartChannelsTrend = null;
+  let currentTrendMetric = 'spend';
+
+  function initChannelsTrendChart() {
+    const m = TREND_DATA[currentTrendMetric];
+    const ctx = document.getElementById('chartChannelsTrend').getContext('2d');
+    chartChannelsTrend = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен'],
+        datasets: [
+          {
+            label: 'Яндекс.Директ',
+            data: m.ya,
+            borderColor: '#3987e5',
+            backgroundColor: 'rgba(57, 135, 229, 0.1)',
+            tension: 0.3,
+            borderWidth: 2.5,
+            pointRadius: 4,
+            pointBackgroundColor: '#3987e5'
+          },
+          {
+            label: 'Telegram Ads',
+            data: m.tg,
+            borderColor: '#d95926',
+            backgroundColor: 'rgba(217, 89, 38, 0.1)',
+            tension: 0.3,
+            borderWidth: 2.5,
+            pointRadius: 4,
+            pointBackgroundColor: '#d95926'
+          },
+          {
+            label: 'ВКонтакте',
+            data: m.vk,
+            borderColor: '#199e70',
+            backgroundColor: 'rgba(25, 158, 112, 0.1)',
+            tension: 0.3,
+            borderWidth: 2.5,
+            pointRadius: 4,
+            pointBackgroundColor: '#199e70'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8b949e' } },
+          y: {
+            beginAtZero: true,
+            grace: '12%',
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: {
+              color: '#8b949e',
+              callback: v => m.format(v)
+            }
+          }
+        },
+        plugins: {
+          legend: { position: 'top', labels: { color: '#e6edf3', boxWidth: 12 } },
+          tooltip: {
+            callbacks: {
+              label: function(c) {
+                return c.dataset.label + ': ' + m.format(c.raw);
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function setTrendMetric(metric, btn) {
+    currentTrendMetric = metric;
+    if (btn && btn.parentElement) {
+      btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const m = TREND_DATA[metric];
+    if (chartChannelsTrend && m) {
+      chartChannelsTrend.data.datasets[0].data = m.ya;
+      chartChannelsTrend.data.datasets[1].data = m.tg;
+      chartChannelsTrend.data.datasets[2].data = m.vk;
+      chartChannelsTrend.options.scales.y.ticks.callback = v => m.format(v);
+      chartChannelsTrend.update();
+      document.getElementById('trendChartTitle').innerText = '📈 ' + m.name;
+      document.getElementById('trendChartSubtitle').innerText = m.sub;
+    }
+  }
+
+  initChannelsTrendChart();
+
+  // Данные всех кампаний для динамической фильтрации таблицы
+  const ALL_CAMPAIGNS = [{"channel": "Яндекс.Директ", "month": "2026-01", "month_name": "Январь", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 42955.29, "spend_eur": 0.0, "impressions": 27952, "clicks": 1608, "targets": 51, "ctr": 5.75, "cpc": 26.7, "cpa": 842.26, "cr": 3.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 842 ₽ (CR 3.2%)"}, {"channel": "Яндекс.Директ", "month": "2026-01", "month_name": "Январь", "campaign": "Поиск_Enterprise_B2B_Внедрение", "spend": 45256.04, "spend_eur": 0.0, "impressions": 13862, "clicks": 617, "targets": 17, "ctr": 4.45, "cpc": 73.3, "cpa": 2662.12, "cr": 2.8, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 2,662 ₽ (CR 2.8%)"}, {"channel": "Яндекс.Директ", "month": "2026-01", "month_name": "Январь", "campaign": "Поиск База_Знаний_B2B (12.2025)", "spend": 48293.44, "spend_eur": 0.0, "impressions": 12439, "clicks": 516, "targets": 9, "ctr": 4.15, "cpc": 93.6, "cpa": 5365.94, "cr": 1.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 5,366 ₽ (CR 1.7%)"}, {"channel": "Яндекс.Директ", "month": "2026-01", "month_name": "Январь", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 37067.78, "spend_eur": 0.0, "impressions": 151322, "clicks": 1733, "targets": 59, "ctr": 1.15, "cpc": 21.4, "cpa": 628.27, "cr": 3.4, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 628 ₽ (CR 3.4%)"}, {"channel": "Яндекс.Директ", "month": "2026-01", "month_name": "Январь", "campaign": "РСЯ_Enterprise_B2B_Внедрение", "spend": 33460.81, "spend_eur": 0.0, "impressions": 177256, "clicks": 1116, "targets": 9, "ctr": 0.63, "cpc": 30.0, "cpa": 3717.87, "cr": 0.8, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 3,718 ₽ (CR 0.8%)"}, {"channel": "Яндекс.Директ", "month": "2026-01", "month_name": "Январь", "campaign": "РСЯ База_Знаний_B2B (12.2025)", "spend": 37030.2, "spend_eur": 0.0, "impressions": 63933, "clicks": 334, "targets": 53, "ctr": 0.52, "cpc": 110.9, "cpa": 698.68, "cr": 15.9, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 699 ₽ (CR 15.9%)"}, {"channel": "Яндекс.Директ", "month": "2026-02", "month_name": "Февраль", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 70250.66, "spend_eur": 0.0, "impressions": 68523, "clicks": 2926, "targets": 64, "ctr": 4.27, "cpc": 24.0, "cpa": 1097.67, "cr": 2.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 1,098 ₽ (CR 2.2%)"}, {"channel": "Яндекс.Директ", "month": "2026-02", "month_name": "Февраль", "campaign": "Поиск_Enterprise_B2B_Внедрение", "spend": 44750.5, "spend_eur": 0.0, "impressions": 14762, "clicks": 709, "targets": 15, "ctr": 4.8, "cpc": 63.1, "cpa": 2983.37, "cr": 2.1, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 2,983 ₽ (CR 2.1%)"}, {"channel": "Яндекс.Директ", "month": "2026-02", "month_name": "Февраль", "campaign": "Поиск База_Знаний_B2B (12.2025)", "spend": 33594.87, "spend_eur": 0.0, "impressions": 6712, "clicks": 382, "targets": 2, "ctr": 5.69, "cpc": 87.9, "cpa": 16797.44, "cr": 0.5, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 16,797 ₽ (CR 0.5%)"}, {"channel": "Яндекс.Директ", "month": "2026-02", "month_name": "Февраль", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 22397.67, "spend_eur": 0.0, "impressions": 2353, "clicks": 198, "targets": 83, "ctr": 8.41, "cpc": 113.1, "cpa": 269.85, "cr": 41.9, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 270 ₽ (CR 41.9%)"}, {"channel": "Яндекс.Директ", "month": "2026-02", "month_name": "Февраль", "campaign": "РСЯ_Enterprise_B2B_Внедрение", "spend": 22396.58, "spend_eur": 0.0, "impressions": 119212, "clicks": 885, "targets": 2, "ctr": 0.74, "cpc": 25.3, "cpa": 11198.29, "cr": 0.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 11,198 ₽ (CR 0.2%)"}, {"channel": "Яндекс.Директ", "month": "2026-02", "month_name": "Февраль", "campaign": "РСЯ База_Знаний_B2B (12.2025)", "spend": 22082.7, "spend_eur": 0.0, "impressions": 6398, "clicks": 191, "targets": 35, "ctr": 2.99, "cpc": 115.6, "cpa": 630.93, "cr": 18.3, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 631 ₽ (CR 18.3%)"}, {"channel": "Яндекс.Директ", "month": "2026-03", "month_name": "Март", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 86157.6, "spend_eur": 0.0, "impressions": 48711, "clicks": 2770, "targets": 77, "ctr": 5.69, "cpc": 31.1, "cpa": 1118.93, "cr": 2.8, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 1,119 ₽ (CR 2.8%)"}, {"channel": "Яндекс.Директ", "month": "2026-03", "month_name": "Март", "campaign": "Поиск_Enterprise_B2B_Внедрение", "spend": 51989.15, "spend_eur": 0.0, "impressions": 12463, "clicks": 683, "targets": 11, "ctr": 5.48, "cpc": 76.1, "cpa": 4726.29, "cr": 1.6, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 4,726 ₽ (CR 1.6%)"}, {"channel": "Яндекс.Директ", "month": "2026-03", "month_name": "Март", "campaign": "Поиск База_Знаний_B2B (12.2025)", "spend": 38372.76, "spend_eur": 0.0, "impressions": 9005, "clicks": 442, "targets": 0, "ctr": 4.91, "cpc": 86.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 38,373 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-03", "month_name": "Март", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 21781.48, "spend_eur": 0.0, "impressions": 7811, "clicks": 250, "targets": 28, "ctr": 3.2, "cpc": 87.1, "cpa": 777.91, "cr": 11.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 778 ₽ (CR 11.2%)"}, {"channel": "Яндекс.Директ", "month": "2026-03", "month_name": "Март", "campaign": "РСЯ_Enterprise_B2B_Внедрение", "spend": 25598.76, "spend_eur": 0.0, "impressions": 188102, "clicks": 1672, "targets": 4, "ctr": 0.89, "cpc": 15.3, "cpa": 6399.69, "cr": 0.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 6,400 ₽ (CR 0.2%)"}, {"channel": "Яндекс.Директ", "month": "2026-03", "month_name": "Март", "campaign": "РСЯ База_Знаний_B2B (12.2025)", "spend": 33402.04, "spend_eur": 0.0, "impressions": 244262, "clicks": 951, "targets": 17, "ctr": 0.39, "cpc": 35.1, "cpa": 1964.83, "cr": 1.8, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 1,965 ₽ (CR 1.8%)"}, {"channel": "Яндекс.Директ", "month": "2026-04", "month_name": "Апрель", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 87640.18, "spend_eur": 0.0, "impressions": 80857, "clicks": 2700, "targets": 84, "ctr": 3.34, "cpc": 32.5, "cpa": 1043.34, "cr": 3.1, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 1,043 ₽ (CR 3.1%)"}, {"channel": "Яндекс.Директ", "month": "2026-04", "month_name": "Апрель", "campaign": "Поиск_Enterprise_B2B_Внедрение", "spend": 48668.62, "spend_eur": 0.0, "impressions": 13675, "clicks": 602, "targets": 4, "ctr": 4.4, "cpc": 80.8, "cpa": 12167.16, "cr": 0.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 12,167 ₽ (CR 0.7%)"}, {"channel": "Яндекс.Директ", "month": "2026-04", "month_name": "Апрель", "campaign": "Поиск База_Знаний_B2B (12.2025)", "spend": 36940.28, "spend_eur": 0.0, "impressions": 10938, "clicks": 419, "targets": 0, "ctr": 3.83, "cpc": 88.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 36,940 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-04", "month_name": "Апрель", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 18543.56, "spend_eur": 0.0, "impressions": 29637, "clicks": 235, "targets": 7, "ctr": 0.79, "cpc": 78.9, "cpa": 2649.08, "cr": 3.0, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 2,649 ₽ (CR 3.0%)"}, {"channel": "Яндекс.Директ", "month": "2026-04", "month_name": "Апрель", "campaign": "РСЯ_Enterprise_B2B_Внедрение", "spend": 24770.62, "spend_eur": 0.0, "impressions": 167756, "clicks": 1691, "targets": 7, "ctr": 1.01, "cpc": 14.6, "cpa": 3538.66, "cr": 0.4, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 3,539 ₽ (CR 0.4%)"}, {"channel": "Яндекс.Директ", "month": "2026-04", "month_name": "Апрель", "campaign": "РСЯ База_Знаний_B2B (12.2025)", "spend": 38399.22, "spend_eur": 0.0, "impressions": 331014, "clicks": 2267, "targets": 15, "ctr": 0.68, "cpc": 16.9, "cpa": 2559.95, "cr": 0.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 2,560 ₽ (CR 0.7%)"}, {"channel": "Яндекс.Директ", "month": "2026-05", "month_name": "Май", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 43511.42, "spend_eur": 0.0, "impressions": 67830, "clicks": 1619, "targets": 77, "ctr": 2.39, "cpc": 26.9, "cpa": 565.08, "cr": 4.8, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 565 ₽ (CR 4.8%)"}, {"channel": "Яндекс.Директ", "month": "2026-05", "month_name": "Май", "campaign": "Поиск_Enterprise_B2B_Внедрение", "spend": 26226.44, "spend_eur": 0.0, "impressions": 9353, "clicks": 382, "targets": 17, "ctr": 4.08, "cpc": 68.7, "cpa": 1542.73, "cr": 4.5, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 1,543 ₽ (CR 4.5%)"}, {"channel": "Яндекс.Директ", "month": "2026-05", "month_name": "Май", "campaign": "Поиск База_Знаний_B2B (12.2025)", "spend": 2939.55, "spend_eur": 0.0, "impressions": 602, "clicks": 20, "targets": 0, "ctr": 3.32, "cpc": 147.0, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 2,940 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-05", "month_name": "Май", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 13360.09, "spend_eur": 0.0, "impressions": 47774, "clicks": 279, "targets": 2, "ctr": 0.58, "cpc": 47.9, "cpa": 6680.05, "cr": 0.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 6,680 ₽ (CR 0.7%)"}, {"channel": "Яндекс.Директ", "month": "2026-05", "month_name": "Май", "campaign": "РСЯ_Enterprise_B2B_Внедрение", "spend": 13649.01, "spend_eur": 0.0, "impressions": 98352, "clicks": 901, "targets": 2, "ctr": 0.92, "cpc": 15.1, "cpa": 6824.51, "cr": 0.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 6,825 ₽ (CR 0.2%)"}, {"channel": "Яндекс.Директ", "month": "2026-05", "month_name": "Май", "campaign": "РСЯ База_Знаний_B2B (12.2025)", "spend": 14159.67, "spend_eur": 0.0, "impressions": 86686, "clicks": 769, "targets": 9, "ctr": 0.89, "cpc": 18.4, "cpa": 1573.3, "cr": 1.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 1,573 ₽ (CR 1.2%)"}, {"channel": "Яндекс.Директ", "month": "2026-06", "month_name": "Июнь", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 71718.52, "spend_eur": 0.0, "impressions": 91284, "clicks": 2302, "targets": 83, "ctr": 2.52, "cpc": 31.2, "cpa": 864.08, "cr": 3.6, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 864 ₽ (CR 3.6%)"}, {"channel": "Яндекс.Директ", "month": "2026-06", "month_name": "Июнь", "campaign": "Поиск_Enterprise_B2B_Внедрение", "spend": 42527.55, "spend_eur": 0.0, "impressions": 14995, "clicks": 773, "targets": 18, "ctr": 5.16, "cpc": 55.0, "cpa": 2362.64, "cr": 2.3, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 2,363 ₽ (CR 2.3%)"}, {"channel": "Яндекс.Директ", "month": "2026-06", "month_name": "Июнь", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 19432.65, "spend_eur": 0.0, "impressions": 42612, "clicks": 237, "targets": 4, "ctr": 0.56, "cpc": 82.0, "cpa": 4858.16, "cr": 1.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 4,858 ₽ (CR 1.7%)"}, {"channel": "Яндекс.Директ", "month": "2026-06", "month_name": "Июнь", "campaign": "РСЯ_Enterprise_B2B_Внедрение", "spend": 21389.14, "spend_eur": 0.0, "impressions": 136746, "clicks": 1120, "targets": 0, "ctr": 0.82, "cpc": 19.1, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 21,389 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-06", "month_name": "Июнь", "campaign": "РСЯ База_Знаний_B2B (12.2025)", "spend": 30770.15, "spend_eur": 0.0, "impressions": 78056, "clicks": 424, "targets": 20, "ctr": 0.54, "cpc": 72.6, "cpa": 1538.51, "cr": 4.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 1,539 ₽ (CR 4.7%)"}, {"channel": "Яндекс.Директ", "month": "2026-07", "month_name": "Июль", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 22979.06, "spend_eur": 0.0, "impressions": 65253, "clicks": 890, "targets": 117, "ctr": 1.36, "cpc": 25.8, "cpa": 196.4, "cr": 13.1, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 196 ₽ (CR 13.1%)"}, {"channel": "Яндекс.Директ", "month": "2026-07", "month_name": "Июль", "campaign": "Поиск_Enterprise_B2B_Внедрение", "spend": 17078.88, "spend_eur": 0.0, "impressions": 8535, "clicks": 376, "targets": 18, "ctr": 4.41, "cpc": 45.4, "cpa": 948.83, "cr": 4.8, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 949 ₽ (CR 4.8%)"}, {"channel": "Яндекс.Директ", "month": "2026-07", "month_name": "Июль", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 5469.61, "spend_eur": 0.0, "impressions": 26015, "clicks": 253, "targets": 2, "ctr": 0.97, "cpc": 21.6, "cpa": 2734.8, "cr": 0.8, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 2,735 ₽ (CR 0.8%)"}, {"channel": "Яндекс.Директ", "month": "2026-07", "month_name": "Июль", "campaign": "РСЯ_Enterprise_B2B_Внедрение", "spend": 9858.26, "spend_eur": 0.0, "impressions": 61752, "clicks": 397, "targets": 4, "ctr": 0.64, "cpc": 24.8, "cpa": 2464.57, "cr": 1.0, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 2,465 ₽ (CR 1.0%)"}, {"channel": "Яндекс.Директ", "month": "2026-07", "month_name": "Июль", "campaign": "РСЯ База_Знаний_B2B (12.2025)", "spend": 8931.19, "spend_eur": 0.0, "impressions": 63729, "clicks": 400, "targets": 0, "ctr": 0.63, "cpc": 22.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 8,931 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-08", "month_name": "Август", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 353.22, "spend_eur": 0.0, "impressions": 1516, "clicks": 22, "targets": 7, "ctr": 1.45, "cpc": 16.1, "cpa": 50.46, "cr": 31.8, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 50 ₽ (CR 31.8%)"}, {"channel": "Яндекс.Директ", "month": "2026-08", "month_name": "Август", "campaign": "Поиск_Enterprise_B2B_Внедрение", "spend": 520.79, "spend_eur": 0.0, "impressions": 375, "clicks": 11, "targets": 0, "ctr": 2.93, "cpc": 47.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 521 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-08", "month_name": "Август", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 1941.88, "spend_eur": 0.0, "impressions": 6574, "clicks": 84, "targets": 0, "ctr": 1.28, "cpc": 23.1, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 1,942 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-08", "month_name": "Август", "campaign": "РСЯ_Enterprise_B2B_Внедрение", "spend": 2534.5, "spend_eur": 0.0, "impressions": 12474, "clicks": 121, "targets": 0, "ctr": 0.97, "cpc": 20.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 2,534 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-08", "month_name": "Август", "campaign": "РСЯ База_Знаний_B2B (12.2025)", "spend": 2634.92, "spend_eur": 0.0, "impressions": 16636, "clicks": 88, "targets": 0, "ctr": 0.53, "cpc": 29.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 2,635 ₽"}, {"channel": "Яндекс.Директ", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Поиск_Enterprise_B2B_Видеокурс", "spend": 40971.02, "spend_eur": 0.0, "impressions": 36450, "clicks": 1579, "targets": 95, "ctr": 4.33, "cpc": 25.9, "cpa": 431.27, "cr": 6.0, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 431 ₽ (CR 6.0%)"}, {"channel": "Яндекс.Директ", "month": "2026-09", "month_name": "Сентябрь", "campaign": "РСЯ_Enterprise_B2B_Видеокурс", "spend": 9783.93, "spend_eur": 0.0, "impressions": 52065, "clicks": 1219, "targets": 11, "ctr": 2.34, "cpc": 8.0, "cpa": 889.45, "cr": 0.9, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 889 ₽ (CR 0.9%)"}, {"channel": "Яндекс.Директ", "month": "2026-09", "month_name": "Сентябрь", "campaign": "РСЯ_Enterprise_B2B_Видеокурс_Ретаргет", "spend": 7054.3, "spend_eur": 0.0, "impressions": 38243, "clicks": 889, "targets": 4, "ctr": 2.32, "cpc": 7.9, "cpa": 1763.58, "cr": 0.4, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 1,764 ₽ (CR 0.4%)"}, {"channel": "Telegram Ads", "month": "2026-01", "month_name": "Январь", "campaign": "Сообщество экспертов (09.25)", "spend": 13963.35, "spend_eur": 90.55, "impressions": 143336, "clicks": 272, "targets": 55, "ctr": 0.19, "cpc": 51.3, "cpa": 253.88, "cr": 20.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 254 ₽ (CR 20.2%)"}, {"channel": "Telegram Ads", "month": "2026-01", "month_name": "Январь", "campaign": "Видеокурсы_декабрь 2025", "spend": 14830.76, "spend_eur": 96.17, "impressions": 152330, "clicks": 292, "targets": 0, "ctr": 0.19, "cpc": 50.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 14,831 ₽"}, {"channel": "Telegram Ads", "month": "2026-01", "month_name": "Январь", "campaign": "База_Знаний_B2B_B2B_декабрь 2025", "spend": 15262.54, "spend_eur": 98.98, "impressions": 156517, "clicks": 286, "targets": 0, "ctr": 0.18, "cpc": 53.4, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 15,263 ₽"}, {"channel": "Telegram Ads", "month": "2026-02", "month_name": "Февраль", "campaign": "Видеокурсы_декабрь 2025", "spend": 32.77, "spend_eur": 0.21, "impressions": 387, "clicks": 0, "targets": 0, "ctr": 0.0, "cpc": 0, "cpa": 0, "cr": 0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 33 ₽"}, {"channel": "Telegram Ads", "month": "2026-02", "month_name": "Февраль", "campaign": "База_Знаний_B2B_B2B_декабрь 2025", "spend": 15757.92, "spend_eur": 102.19, "impressions": 137535, "clicks": 239, "targets": 0, "ctr": 0.17, "cpc": 65.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 15,758 ₽"}, {"channel": "Telegram Ads", "month": "2026-02", "month_name": "Февраль", "campaign": "Видеокурсы_февраль 2026", "spend": 19613.07, "spend_eur": 127.19, "impressions": 172656, "clicks": 277, "targets": 0, "ctr": 0.16, "cpc": 70.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 19,613 ₽"}, {"channel": "Telegram Ads", "month": "2026-02", "month_name": "Февраль", "campaign": "Сообщество экспертов_февраль 2026", "spend": 19615.0, "spend_eur": 127.2, "impressions": 174703, "clicks": 345, "targets": 83, "ctr": 0.2, "cpc": 56.9, "cpa": 236.33, "cr": 24.1, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 236 ₽ (CR 24.1%)"}, {"channel": "Telegram Ads", "month": "2026-02", "month_name": "Февраль", "campaign": "PR бренда_февраль 2026", "spend": 19613.07, "spend_eur": 127.19, "impressions": 171336, "clicks": 358, "targets": 0, "ctr": 0.21, "cpc": 54.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 19,613 ₽"}, {"channel": "Telegram Ads", "month": "2026-02", "month_name": "Февраль", "campaign": "Вебинар «Стандарты учета»_февраль 2026", "spend": 670.8, "spend_eur": 4.35, "impressions": 1973, "clicks": 15, "targets": 0, "ctr": 0.76, "cpc": 44.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 671 ₽"}, {"channel": "Telegram Ads", "month": "2026-03", "month_name": "Март", "campaign": "Сообщество экспертов_февраль 2026", "spend": 7565.73, "spend_eur": 49.06, "impressions": 80993, "clicks": 112, "targets": 20, "ctr": 0.14, "cpc": 67.6, "cpa": 378.29, "cr": 17.9, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 378 ₽ (CR 17.9%)"}, {"channel": "Telegram Ads", "month": "2026-03", "month_name": "Март", "campaign": "PR бренда_февраль 2026", "spend": 12500.32, "spend_eur": 81.06, "impressions": 117712, "clicks": 229, "targets": 0, "ctr": 0.19, "cpc": 54.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 12,500 ₽"}, {"channel": "Telegram Ads", "month": "2026-03", "month_name": "Март", "campaign": "Видеокурсы_март 2026", "spend": 20235.68, "spend_eur": 131.22, "impressions": 173089, "clicks": 217, "targets": 0, "ctr": 0.13, "cpc": 93.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 20,236 ₽"}, {"channel": "Telegram Ads", "month": "2026-03", "month_name": "Март", "campaign": "Архитектура_Решений_март 2026", "spend": 17828.14, "spend_eur": 115.61, "impressions": 147863, "clicks": 140, "targets": 0, "ctr": 0.09, "cpc": 127.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 17,828 ₽"}, {"channel": "Telegram Ads", "month": "2026-03", "month_name": "Март", "campaign": "Библиотека скриптов_март 2026", "spend": 17920.66, "spend_eur": 116.21, "impressions": 148618, "clicks": 147, "targets": 0, "ctr": 0.1, "cpc": 121.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 17,921 ₽"}, {"channel": "Telegram Ads", "month": "2026-03", "month_name": "Март", "campaign": "Клуб_Экспертов_март 2026", "spend": 13861.19, "spend_eur": 89.89, "impressions": 107764, "clicks": 110, "targets": 0, "ctr": 0.1, "cpc": 126.0, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 13,861 ₽"}, {"channel": "Telegram Ads", "month": "2026-03", "month_name": "Март", "campaign": "Спецкурс_Enterprise_март 2026", "spend": 10960.19, "spend_eur": 71.08, "impressions": 84116, "clicks": 66, "targets": 0, "ctr": 0.08, "cpc": 166.1, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 10,960 ₽"}, {"channel": "Telegram Ads", "month": "2026-03", "month_name": "Март", "campaign": "Вебинар «Оптимизация процессов»_март 2026", "spend": 7673.68, "spend_eur": 49.76, "impressions": 48421, "clicks": 70, "targets": 0, "ctr": 0.14, "cpc": 109.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 7,674 ₽"}, {"channel": "Telegram Ads", "month": "2026-04", "month_name": "Апрель", "campaign": "Сообщество экспертов_февраль 2026", "spend": 23500.99, "spend_eur": 152.4, "impressions": 188146, "clicks": 204, "targets": 33, "ctr": 0.11, "cpc": 115.2, "cpa": 712.15, "cr": 16.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 712 ₽ (CR 16.2%)"}, {"channel": "Telegram Ads", "month": "2026-04", "month_name": "Апрель", "campaign": "PR бренда_февраль 2026", "spend": 24031.07, "spend_eur": 155.84, "impressions": 189156, "clicks": 204, "targets": 0, "ctr": 0.11, "cpc": 117.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 24,031 ₽"}, {"channel": "Telegram Ads", "month": "2026-04", "month_name": "Апрель", "campaign": "Видеокурсы_март 2026", "spend": 4709.07, "spend_eur": 30.54, "impressions": 32031, "clicks": 15, "targets": 0, "ctr": 0.05, "cpc": 313.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 4,709 ₽"}, {"channel": "Telegram Ads", "month": "2026-04", "month_name": "Апрель", "campaign": "Архитектура_Решений_март 2026", "spend": 4770.75, "spend_eur": 30.94, "impressions": 32455, "clicks": 22, "targets": 0, "ctr": 0.07, "cpc": 216.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 4,771 ₽"}, {"channel": "Telegram Ads", "month": "2026-04", "month_name": "Апрель", "campaign": "Библиотека скриптов_март 2026", "spend": 4826.65, "spend_eur": 31.3, "impressions": 32835, "clicks": 26, "targets": 0, "ctr": 0.08, "cpc": 185.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 4,827 ₽"}, {"channel": "Telegram Ads", "month": "2026-04", "month_name": "Апрель", "campaign": "Клуб_Экспертов_март 2026", "spend": 4801.59, "spend_eur": 31.14, "impressions": 32659, "clicks": 26, "targets": 0, "ctr": 0.08, "cpc": 184.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 4,802 ₽"}, {"channel": "Telegram Ads", "month": "2026-04", "month_name": "Апрель", "campaign": "Спецкурс_Enterprise_март 2026", "spend": 4188.62, "spend_eur": 27.16, "impressions": 28488, "clicks": 22, "targets": 0, "ctr": 0.08, "cpc": 190.4, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 4,189 ₽"}, {"channel": "Telegram Ads", "month": "2026-04", "month_name": "Апрель", "campaign": "Видеокурсы_февраль 2026", "spend": 21451.98, "spend_eur": 139.11, "impressions": 170212, "clicks": 211, "targets": 0, "ctr": 0.12, "cpc": 101.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 21,452 ₽"}, {"channel": "Telegram Ads", "month": "2026-05", "month_name": "Май", "campaign": "Сообщество экспертов_май 2026", "spend": 23624.72, "spend_eur": 151.4, "impressions": 161336, "clicks": 222, "targets": 46, "ctr": 0.14, "cpc": 106.4, "cpa": 513.58, "cr": 20.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 514 ₽ (CR 20.7%)"}, {"channel": "Telegram Ads", "month": "2026-05", "month_name": "Май", "campaign": "Видеокурсы_май 2026", "spend": 33543.12, "spend_eur": 214.96, "impressions": 228675, "clicks": 224, "targets": 0, "ctr": 0.1, "cpc": 149.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 33,543 ₽"}, {"channel": "Telegram Ads", "month": "2026-06", "month_name": "Июнь", "campaign": "Сообщество экспертов_май 2026", "spend": 25514.21, "spend_eur": 154.43, "impressions": 166313, "clicks": 235, "targets": 35, "ctr": 0.14, "cpc": 108.6, "cpa": 728.98, "cr": 14.9, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 729 ₽ (CR 14.9%)"}, {"channel": "Telegram Ads", "month": "2026-06", "month_name": "Июнь", "campaign": "Видеокурсы_июнь 2026 (вариант 1)", "spend": 20691.84, "spend_eur": 125.24, "impressions": 109229, "clicks": 147, "targets": 0, "ctr": 0.13, "cpc": 140.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 20,692 ₽"}, {"channel": "Telegram Ads", "month": "2026-06", "month_name": "Июнь", "campaign": "Видеокурсы_июнь 2026 (вариант 2)", "spend": 20305.62, "spend_eur": 122.9, "impressions": 106740, "clicks": 130, "targets": 0, "ctr": 0.12, "cpc": 156.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 20,306 ₽"}, {"channel": "Telegram Ads", "month": "2026-06", "month_name": "Июнь", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 1)", "spend": 12362.64, "spend_eur": 74.83, "impressions": 62022, "clicks": 66, "targets": 0, "ctr": 0.11, "cpc": 187.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 12,363 ₽"}, {"channel": "Telegram Ads", "month": "2026-06", "month_name": "Июнь", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 2)", "spend": 11961.98, "spend_eur": 72.4, "impressions": 60096, "clicks": 64, "targets": 0, "ctr": 0.11, "cpc": 186.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 11,962 ₽"}, {"channel": "Telegram Ads", "month": "2026-06", "month_name": "Июнь", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 3)", "spend": 12059.05, "spend_eur": 72.99, "impressions": 60720, "clicks": 55, "targets": 0, "ctr": 0.09, "cpc": 219.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 12,059 ₽"}, {"channel": "Telegram Ads", "month": "2026-07", "month_name": "Июль", "campaign": "Видеокурсы_июнь 2026 (вариант 1)", "spend": 15569.52, "spend_eur": 89.28, "impressions": 101258, "clicks": 130, "targets": 0, "ctr": 0.13, "cpc": 119.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 15,570 ₽"}, {"channel": "Telegram Ads", "month": "2026-07", "month_name": "Июль", "campaign": "Видеокурсы_июнь 2026 (вариант 2)", "spend": 15798.42, "spend_eur": 90.59, "impressions": 102942, "clicks": 110, "targets": 0, "ctr": 0.11, "cpc": 143.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 15,798 ₽"}, {"channel": "Telegram Ads", "month": "2026-07", "month_name": "Июль", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 1)", "spend": 14640.85, "spend_eur": 83.95, "impressions": 95633, "clicks": 108, "targets": 0, "ctr": 0.11, "cpc": 135.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 14,641 ₽"}, {"channel": "Telegram Ads", "month": "2026-07", "month_name": "Июль", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 2)", "spend": 14721.51, "spend_eur": 84.41, "impressions": 96100, "clicks": 99, "targets": 0, "ctr": 0.1, "cpc": 148.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 14,722 ₽"}, {"channel": "Telegram Ads", "month": "2026-07", "month_name": "Июль", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 3)", "spend": 691.06, "spend_eur": 3.96, "impressions": 2910, "clicks": 7, "targets": 0, "ctr": 0.24, "cpc": 98.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 691 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Сообщество экспертов_сентябрь 2026", "spend": 4787.27, "spend_eur": 27.45, "impressions": 33599, "clicks": 55, "targets": 7, "ctr": 0.16, "cpc": 87.0, "cpa": 683.9, "cr": 12.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 684 ₽ (CR 12.7%)"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 1)", "spend": 3440.04, "spend_eur": 19.72, "impressions": 27045, "clicks": 28, "targets": 0, "ctr": 0.1, "cpc": 122.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 3,440 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 2)", "spend": 3376.82, "spend_eur": 19.36, "impressions": 26674, "clicks": 28, "targets": 0, "ctr": 0.1, "cpc": 120.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 3,377 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 3)", "spend": 3381.17, "spend_eur": 19.39, "impressions": 26547, "clicks": 22, "targets": 0, "ctr": 0.08, "cpc": 153.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 3,381 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 4)", "spend": 5051.05, "spend_eur": 28.96, "impressions": 36624, "clicks": 39, "targets": 0, "ctr": 0.11, "cpc": 129.5, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 5,051 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 5)", "spend": 4968.2, "spend_eur": 28.49, "impressions": 36099, "clicks": 35, "targets": 0, "ctr": 0.1, "cpc": 141.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 4,968 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 6)", "spend": 4942.04, "spend_eur": 28.34, "impressions": 36125, "clicks": 44, "targets": 0, "ctr": 0.12, "cpc": 112.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 4,942 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Enterprise_B2B_сентябрь 2026 (вар. 1)", "spend": 5449.99, "spend_eur": 31.25, "impressions": 55775, "clicks": 77, "targets": 0, "ctr": 0.14, "cpc": 70.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 5,450 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Enterprise_B2B_сентябрь 2026 (вар. 2)", "spend": 5449.99, "spend_eur": 31.25, "impressions": 57372, "clicks": 99, "targets": 0, "ctr": 0.17, "cpc": 55.1, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 5,450 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Видеокурсы скидка 30% (группы конкурентов)", "spend": 4530.02, "spend_eur": 25.98, "impressions": 31781, "clicks": 35, "targets": 0, "ctr": 0.11, "cpc": 129.4, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 4,530 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Видеокурсы скидка 30% (Целевая B2B аудитория)", "spend": 8589.18, "spend_eur": 49.25, "impressions": 60269, "clicks": 64, "targets": 0, "ctr": 0.11, "cpc": 134.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 8,589 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар «Практикум регламентов» (вар. 1)", "spend": 16349.96, "spend_eur": 93.75, "impressions": 172109, "clicks": 275, "targets": 0, "ctr": 0.16, "cpc": 59.5, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 16,350 ₽"}, {"channel": "Telegram Ads", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар «Практикум регламентов» (вар. 2)", "spend": 1318.9, "spend_eur": 7.56, "impressions": 12078, "clicks": 17, "targets": 0, "ctr": 0.14, "cpc": 77.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 1,319 ₽"}, {"channel": "ВКонтакте", "month": "2026-01", "month_name": "Январь", "campaign": "База_Знаний_B2B_декабрь 2025", "spend": 37582.66, "spend_eur": 0.0, "impressions": 1243908, "clicks": 5338, "targets": 0, "ctr": 0.43, "cpc": 7.0, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 37,583 ₽"}, {"channel": "ВКонтакте", "month": "2026-02", "month_name": "Февраль", "campaign": "База_Знаний_B2B_декабрь 2025", "spend": 24081.52, "spend_eur": 0.0, "impressions": 481956, "clicks": 3036, "targets": 0, "ctr": 0.63, "cpc": 7.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 24,082 ₽"}, {"channel": "ВКонтакте", "month": "2026-02", "month_name": "Февраль", "campaign": "Видеокурсы_февраль 2026", "spend": 20739.31, "spend_eur": 0.0, "impressions": 528794, "clicks": 975, "targets": 0, "ctr": 0.18, "cpc": 21.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 20,739 ₽"}, {"channel": "ВКонтакте", "month": "2026-02", "month_name": "Февраль", "campaign": "PR бренда_февраль 2026_объявление 1", "spend": 23278.88, "spend_eur": 0.0, "impressions": 595123, "clicks": 1146, "targets": 0, "ctr": 0.19, "cpc": 20.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 23,279 ₽"}, {"channel": "ВКонтакте", "month": "2026-02", "month_name": "Февраль", "campaign": "PR бренда_февраль 2026_объявление 2", "spend": 17638.72, "spend_eur": 0.0, "impressions": 420156, "clicks": 782, "targets": 0, "ctr": 0.19, "cpc": 22.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 17,639 ₽"}, {"channel": "ВКонтакте", "month": "2026-02", "month_name": "Февраль", "campaign": "Сообщество экспертов_февраль 2026", "spend": 20838.4, "spend_eur": 0.0, "impressions": 73923, "clicks": 239, "targets": 169, "ctr": 0.32, "cpc": 87.2, "cpa": 123.3, "cr": 70.7, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 123 ₽ (CR 70.7%)"}, {"channel": "ВКонтакте", "month": "2026-02", "month_name": "Февраль", "campaign": "Пост \"Вебинар «Стандарты учета»_февраль 2026\"", "spend": 14680.23, "spend_eur": 0.0, "impressions": 147146, "clicks": 62, "targets": 0, "ctr": 0.04, "cpc": 236.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 14,680 ₽"}, {"channel": "ВКонтакте", "month": "2026-03", "month_name": "Март", "campaign": "PR бренда_февраль 2026_объявление 1", "spend": 15995.03, "spend_eur": 0.0, "impressions": 278155, "clicks": 676, "targets": 0, "ctr": 0.24, "cpc": 23.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 15,995 ₽"}, {"channel": "ВКонтакте", "month": "2026-03", "month_name": "Март", "campaign": "Сообщество экспертов_февраль 2026", "spend": 15924.23, "spend_eur": 0.0, "impressions": 49897, "clicks": 182, "targets": 114, "ctr": 0.36, "cpc": 87.5, "cpa": 139.69, "cr": 62.6, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 140 ₽ (CR 62.6%)"}, {"channel": "ВКонтакте", "month": "2026-03", "month_name": "Март", "campaign": "Видеокурсы_март 2026", "spend": 16033.35, "spend_eur": 0.0, "impressions": 239313, "clicks": 1129, "targets": 0, "ctr": 0.47, "cpc": 14.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 16,033 ₽"}, {"channel": "ВКонтакте", "month": "2026-03", "month_name": "Март", "campaign": "Архитектура_Решений_март 2026", "spend": 16043.2, "spend_eur": 0.0, "impressions": 219569, "clicks": 1226, "targets": 0, "ctr": 0.56, "cpc": 13.1, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 16,043 ₽"}, {"channel": "ВКонтакте", "month": "2026-03", "month_name": "Март", "campaign": "Библиотека скриптов_март 2026", "spend": 16009.81, "spend_eur": 0.0, "impressions": 246865, "clicks": 1213, "targets": 0, "ctr": 0.49, "cpc": 13.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 16,010 ₽"}, {"channel": "ВКонтакте", "month": "2026-03", "month_name": "Март", "campaign": "Клуб_Экспертов_март 2026", "spend": 15992.41, "spend_eur": 0.0, "impressions": 247848, "clicks": 1232, "targets": 0, "ctr": 0.5, "cpc": 13.0, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 15,992 ₽"}, {"channel": "ВКонтакте", "month": "2026-03", "month_name": "Март", "campaign": "Спецкурс_Enterprise_март 2026", "spend": 15975.48, "spend_eur": 0.0, "impressions": 212136, "clicks": 1074, "targets": 0, "ctr": 0.51, "cpc": 14.9, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 15,975 ₽"}, {"channel": "ВКонтакте", "month": "2026-04", "month_name": "Апрель", "campaign": "PR бренда_февраль 2026_объявление 1", "spend": 35765.34, "spend_eur": 0.0, "impressions": 478564, "clicks": 1226, "targets": 0, "ctr": 0.26, "cpc": 29.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 35,765 ₽"}, {"channel": "ВКонтакте", "month": "2026-04", "month_name": "Апрель", "campaign": "Сообщество экспертов_февраль 2026", "spend": 35896.09, "spend_eur": 0.0, "impressions": 162768, "clicks": 486, "targets": 253, "ctr": 0.3, "cpc": 73.9, "cpa": 141.88, "cr": 52.1, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 142 ₽ (CR 52.1%)"}, {"channel": "ВКонтакте", "month": "2026-04", "month_name": "Апрель", "campaign": "Архитектура_Решений_март 2026", "spend": 26.75, "spend_eur": 0.0, "impressions": 0, "clicks": 2, "targets": 0, "ctr": 0, "cpc": 13.4, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 27 ₽"}, {"channel": "ВКонтакте", "month": "2026-04", "month_name": "Апрель", "campaign": "Библиотека скриптов_март 2026", "spend": 4470.71, "spend_eur": 0.0, "impressions": 77828, "clicks": 345, "targets": 0, "ctr": 0.44, "cpc": 13.0, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 4,471 ₽"}, {"channel": "ВКонтакте", "month": "2026-04", "month_name": "Апрель", "campaign": "Спецкурс_Enterprise_март 2026", "spend": 4341.56, "spend_eur": 0.0, "impressions": 60230, "clicks": 384, "targets": 0, "ctr": 0.64, "cpc": 11.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 4,342 ₽"}, {"channel": "ВКонтакте", "month": "2026-04", "month_name": "Апрель", "campaign": "Видеокурсы_февраль 2026", "spend": 32392.09, "spend_eur": 0.0, "impressions": 389811, "clicks": 947, "targets": 0, "ctr": 0.24, "cpc": 34.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 32,392 ₽"}, {"channel": "ВКонтакте", "month": "2026-05", "month_name": "Май", "campaign": "Сообщество экспертов_май 2026", "spend": 26781.34, "spend_eur": 0.0, "impressions": 157114, "clicks": 422, "targets": 195, "ctr": 0.27, "cpc": 63.5, "cpa": 137.34, "cr": 46.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 137 ₽ (CR 46.2%)"}, {"channel": "ВКонтакте", "month": "2026-05", "month_name": "Май", "campaign": "Видеокурсы_май 2026 (тёмный)", "spend": 43176.66, "spend_eur": 0.0, "impressions": 379815, "clicks": 3282, "targets": 0, "ctr": 0.86, "cpc": 13.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 43,177 ₽"}, {"channel": "ВКонтакте", "month": "2026-05", "month_name": "Май", "campaign": "Видеокурсы_май 2026 (светлый)", "spend": 34658.0, "spend_eur": 0.0, "impressions": 313038, "clicks": 2616, "targets": 0, "ctr": 0.84, "cpc": 13.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 34,658 ₽"}, {"channel": "ВКонтакте", "month": "2026-06", "month_name": "Июнь", "campaign": "Сообщество экспертов_май 2026", "spend": 30892.73, "spend_eur": 0.0, "impressions": 125693, "clicks": 413, "targets": 257, "ctr": 0.33, "cpc": 74.8, "cpa": 120.21, "cr": 62.2, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 120 ₽ (CR 62.2%)"}, {"channel": "ВКонтакте", "month": "2026-06", "month_name": "Июнь", "campaign": "Видеокурсы_июнь 2026", "spend": 40673.31, "spend_eur": 0.0, "impressions": 338974, "clicks": 1737, "targets": 0, "ctr": 0.51, "cpc": 23.4, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 40,673 ₽"}, {"channel": "ВКонтакте", "month": "2026-06", "month_name": "Июнь", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 1)", "spend": 7159.43, "spend_eur": 0.0, "impressions": 64526, "clicks": 275, "targets": 0, "ctr": 0.43, "cpc": 26.0, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 7,159 ₽"}, {"channel": "ВКонтакте", "month": "2026-06", "month_name": "Июнь", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 2)", "spend": 20687.5, "spend_eur": 0.0, "impressions": 156723, "clicks": 852, "targets": 0, "ctr": 0.54, "cpc": 24.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 20,688 ₽"}, {"channel": "ВКонтакте", "month": "2026-06", "month_name": "Июнь", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 3)", "spend": 18055.98, "spend_eur": 0.0, "impressions": 146352, "clicks": 738, "targets": 0, "ctr": 0.5, "cpc": 24.5, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 18,056 ₽"}, {"channel": "ВКонтакте", "month": "2026-07", "month_name": "Июль", "campaign": "Видеокурсы_июнь 2026", "spend": 38100.92, "spend_eur": 0.0, "impressions": 330157, "clicks": 1871, "targets": 0, "ctr": 0.57, "cpc": 20.4, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 38,101 ₽"}, {"channel": "ВКонтакте", "month": "2026-07", "month_name": "Июль", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 1)", "spend": 266.94, "spend_eur": 0.0, "impressions": 4151, "clicks": 9, "targets": 0, "ctr": 0.22, "cpc": 29.7, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 267 ₽"}, {"channel": "ВКонтакте", "month": "2026-07", "month_name": "Июль", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 2)", "spend": 20844.41, "spend_eur": 0.0, "impressions": 179918, "clicks": 1013, "targets": 0, "ctr": 0.56, "cpc": 20.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 20,844 ₽"}, {"channel": "ВКонтакте", "month": "2026-07", "month_name": "Июль", "campaign": "Сопровождение Enterprise_B2B_июнь 2026 (вариант 3)", "spend": 21388.24, "spend_eur": 0.0, "impressions": 217065, "clicks": 1072, "targets": 0, "ctr": 0.49, "cpc": 20.0, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 21,388 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Сообщество экспертов_сентябрь 2026", "spend": 3613.36, "spend_eur": 0.0, "impressions": 23300, "clicks": 57, "targets": 20, "ctr": 0.24, "cpc": 63.4, "cpa": 180.67, "cr": 35.1, "status_badge": "<span class=\"b-pos\">🟢 Эффективно</span>", "verdict": "Цель: 181 ₽ (CR 35.1%)"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 1)", "spend": 18519.18, "spend_eur": 0.0, "impressions": 256063, "clicks": 525, "targets": 0, "ctr": 0.21, "cpc": 35.3, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 18,519 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 2)", "spend": 15882.83, "spend_eur": 0.0, "impressions": 245019, "clicks": 615, "targets": 0, "ctr": 0.25, "cpc": 25.8, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 15,883 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Архитектура_Решений_сентябрь 2026 (вар. 3)", "spend": 13246.2, "spend_eur": 0.0, "impressions": 187540, "clicks": 426, "targets": 0, "ctr": 0.23, "cpc": 31.1, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 13,246 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Enterprise_B2B_сентябрь 2026 (вар. 1)", "spend": 10432.64, "spend_eur": 0.0, "impressions": 131672, "clicks": 253, "targets": 0, "ctr": 0.19, "cpc": 41.2, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 10,433 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Enterprise_B2B_сентябрь 2026 (вар. 2)", "spend": 9626.51, "spend_eur": 0.0, "impressions": 118682, "clicks": 264, "targets": 0, "ctr": 0.22, "cpc": 36.5, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 9,627 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар Enterprise_B2B_сентябрь 2026 (вар. 3)", "spend": 6667.21, "spend_eur": 0.0, "impressions": 104107, "clicks": 173, "targets": 0, "ctr": 0.17, "cpc": 38.5, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 6,667 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Видеокурсы скидка 30% (Целевая B2B аудитория)", "spend": 16460.94, "spend_eur": 0.0, "impressions": 254001, "clicks": 586, "targets": 0, "ctr": 0.23, "cpc": 28.1, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 16,461 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар «Enterprise-платформы»", "spend": 15533.94, "spend_eur": 0.0, "impressions": 253561, "clicks": 525, "targets": 0, "ctr": 0.21, "cpc": 29.6, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 15,534 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Вебинар «Практикум регламентов»", "spend": 21239.1, "spend_eur": 0.0, "impressions": 257063, "clicks": 543, "targets": 0, "ctr": 0.21, "cpc": 39.1, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-warn\">🟡 Вебинар</span>", "verdict": "Расход: 21,239 ₽"}, {"channel": "ВКонтакте", "month": "2026-09", "month_name": "Сентябрь", "campaign": "Видеокурсы скидка 30% (группы конкурентов)", "spend": 17485.51, "spend_eur": 0.0, "impressions": 204396, "clicks": 393, "targets": 0, "ctr": 0.19, "cpc": 44.5, "cpa": 0, "cr": 0.0, "status_badge": "<span class=\"b-info\">🔵 Охват</span>", "verdict": "Расход: 17,486 ₽"}];
+  const MONTH_NAMES_MAP = {
+    '2026-01': 'Январь', '2026-02': 'Февраль', '2026-03': 'Март',
+    '2026-04': 'Апрель', '2026-05': 'Май', '2026-06': 'Июнь',
+    '2026-07': 'Июль', '2026-08': 'Август', '2026-09': 'Сентябрь'
+  };
+
+  let currentMonth = 'all';
+  let currentChannel = 'all';
+
+  function updateDynamicChart(filteredData) {
+    // 1. Агрегация по рекламным каналам (по всем РК внутри каждого канала):
+    const channelOrder = ['Яндекс.Директ', 'Telegram Ads', 'ВКонтакте'];
+    const channelMap = new Map();
+
+    channelOrder.forEach(ch => {
+      channelMap.set(ch, {
+        channel: ch,
+        spend: 0,
+        impressions: 0,
+        clicks: 0,
+        targets: 0,
+        count: 0
+      });
+    });
+
+    filteredData.forEach(c => {
+      if (!channelMap.has(c.channel)) {
+        channelMap.set(c.channel, {
+          channel: c.channel,
+          spend: 0,
+          impressions: 0,
+          clicks: 0,
+          targets: 0,
+          count: 0
+        });
+      }
+      const item = channelMap.get(c.channel);
+      item.spend += c.spend;
+      item.impressions += c.impressions;
+      item.clicks += c.clicks;
+      item.targets += c.targets;
+      item.count++;
+    });
+
+    // Список каналов для отображения в таблице и графике
+    let activeChannels = channelOrder.map(ch => channelMap.get(ch)).filter(item => {
+      if (currentChannel !== 'all') {
+        return item.channel === currentChannel;
+      }
+      return item.spend > 0 || item.clicks > 0 || item.impressions > 0;
+    });
+
+    if (activeChannels.length === 0) {
+      activeChannels = Array.from(channelMap.values()).filter(item => item.spend > 0 || item.clicks > 0);
+    }
+
+    // Расчет производных метрик (CTR, CPC, CPA)
+    let totalSpend = 0, totalImp = 0, totalClicks = 0, totalTargets = 0;
+    activeChannels.forEach(item => {
+      item.ctr = item.impressions > 0 ? (item.clicks / item.impressions * 100) : 0;
+      item.cpc = item.clicks > 0 ? (item.spend / item.clicks) : 0;
+      item.cpa = item.targets > 0 ? (item.spend / item.targets) : 0;
+      totalSpend += item.spend;
+      totalImp += item.impressions;
+      totalClicks += item.clicks;
+      totalTargets += item.targets;
+    });
+
+    const totalCtr = totalImp > 0 ? (totalClicks / totalImp * 100) : 0;
+    const totalCpc = totalClicks > 0 ? (totalSpend / totalClicks) : 0;
+    const totalCpa = totalTargets > 0 ? (totalSpend / totalTargets) : 0;
+
+    // Бейджи периода и количества
+    const periodName = currentMonth === 'all' ? 'Январь — Сентябрь 2026' : (MONTH_NAMES_MAP[currentMonth] || currentMonth) + ' 2026';
+    const periodElem = document.getElementById('evalPeriodBadge');
+    if (periodElem) periodElem.innerText = periodName;
+
+    const countElem = document.getElementById('campsCountBadge');
+    if (countElem) countElem.innerText = filteredData.length;
+
+    // 2. Рендерим Сводную таблицу эффективности каналов (все 7 метрик одновременно)
+    const tableBody = document.getElementById('channelMetricsTableBody');
+    if (tableBody) {
+      let rowsHtml = '';
+      activeChannels.forEach(item => {
+        const cpaStr = item.cpa > 0 ? Math.round(item.cpa).toLocaleString('ru-RU') + ' ₽' : '—';
+        const colorTag = item.channel === 'Яндекс.Директ' ? '#3987e5' : (item.channel === 'Telegram Ads' ? '#d95926' : '#199e70');
+        rowsHtml += `
+          <tr>
+            <td>
+              <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${colorTag}; margin-right:6px;"></span>
+              <strong>${item.channel}</strong>
+            </td>
+            <td class="num" style="font-weight:600; color:#fff;">${Math.round(item.spend).toLocaleString('ru-RU')} ₽</td>
+            <td class="num">${item.impressions.toLocaleString('ru-RU')}</td>
+            <td class="num" style="color:var(--green); font-weight:600;">${item.clicks.toLocaleString('ru-RU')}</td>
+            <td class="num">${item.ctr.toFixed(2)}%</td>
+            <td class="num">${item.cpc.toFixed(1)} ₽</td>
+            <td class="num" style="color:var(--yellow); font-weight:600;">${item.targets.toLocaleString('ru-RU')}</td>
+            <td class="num" style="font-weight:600;">${cpaStr}</td>
+          </tr>
+        `;
+      });
+
+      const totalCpaStr = totalCpa > 0 ? Math.round(totalCpa).toLocaleString('ru-RU') + ' ₽' : '—';
+      rowsHtml += `
+        <tr class="sum">
+          <td>ИТОГО (по всем РК в выборке)</td>
+          <td class="num">${Math.round(totalSpend).toLocaleString('ru-RU')} ₽</td>
+          <td class="num">${totalImp.toLocaleString('ru-RU')}</td>
+          <td class="num" style="color:var(--green);">${totalClicks.toLocaleString('ru-RU')}</td>
+          <td class="num">${totalCtr.toFixed(2)}%</td>
+          <td class="num">${totalCpc.toFixed(1)} ₽</td>
+          <td class="num" style="color:var(--yellow);">${totalTargets.toLocaleString('ru-RU')}</td>
+          <td class="num">${totalCpaStr}</td>
+        </tr>
+      `;
+      tableBody.innerHTML = rowsHtml;
+    }
+
+  }
+
+  
+  function toggleCampsTable() {
+    const wrap = document.getElementById('campsTableWrap');
+    const btn = document.getElementById('btnToggleCamps');
+    if (!wrap || !btn) return;
+    const isHidden = wrap.style.display === 'none';
+    wrap.style.display = isHidden ? 'block' : 'none';
+    btn.innerHTML = isHidden ? '🙈 Скрыть детальную таблицу кампаний' : '👁️ Показать детальную таблицу кампаний';
+  }
+
+  function initCampsTable() {
+    const tbody = document.getElementById('campsBody');
+    if (!tbody || typeof ALL_CAMPAIGNS === 'undefined') return;
+    tbody.innerHTML = ALL_CAMPAIGNS.map(c => `
+      <tr data-month="${c.month}" data-channel="${c.channel}">
+        <td><strong>${c.channel}</strong></td>
+        <td>${c.month_name}</td>
+        <td style="max-width:320px; overflow:hidden; text-overflow:ellipsis;" title="${c.campaign}">${c.campaign}</td>
+        <td class="num">${c.spend.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})} ₽</td>
+        <td class="num">${c.impressions.toLocaleString('ru-RU')}</td>
+        <td class="num">${c.clicks.toLocaleString('ru-RU')}</td>
+        <td class="num">${c.ctr.toFixed(2)}%</td>
+        <td class="num">${c.cpc.toFixed(1)} ₽</td>
+        <td class="num">${c.targets}</td>
+        <td class="num">${c.cpa > 0 ? c.cpa.toFixed(2) + ' ₽' : '—'}</td>
+        <td>${c.status_badge}</td>
+      </tr>
+    `).join('');
+  }
+
+  function filterTable() {
+    const q = (document.getElementById('campSearch').value || '').toLowerCase().trim();
+    const rows = document.querySelectorAll('#campsBody tr');
+    const filtered = [];
+    let totSpend = 0;
+    let totImp = 0;
+    let totClicks = 0;
+    let totTargets = 0;
+
+    ALL_CAMPAIGNS.forEach((c, idx) => {
+      const matchM = (currentMonth === 'all' || c.month === currentMonth);
+      const matchCh = (currentChannel === 'all' || c.channel === currentChannel);
+      const matchQ = (!q || c.campaign.toLowerCase().includes(q) || c.channel.toLowerCase().includes(q));
+
+      const visible = matchM && matchCh && matchQ;
+      if (rows[idx]) {
+        rows[idx].style.display = visible ? '' : 'none';
+      }
+      if (visible) {
+        filtered.push(c);
+        totSpend += c.spend;
+        totImp += c.impressions;
+        totClicks += c.clicks;
+        totTargets += c.targets;
+      }
+    });
+
+    // Расчет производных метрик для строки ИТОГО в campsTable
+    const totCtr = totImp > 0 ? (totClicks / totImp * 100) : 0;
+    const totCpc = totClicks > 0 ? (totSpend / totClicks) : 0;
+    const totCpa = totTargets > 0 ? (totSpend / totTargets) : 0;
+
+    const mBadge = currentMonth === 'all' ? 'Янв–Сен' : (MONTH_NAMES_MAP[currentMonth] ? MONTH_NAMES_MAP[currentMonth].slice(0, 3) : currentMonth);
+
+    const elMonth = document.getElementById('totColMonth');
+    if (elMonth) elMonth.innerText = mBadge;
+
+    const elCamp = document.getElementById('totColCamp');
+    if (elCamp) elCamp.innerText = `${filtered.length} камп.`;
+
+    const elSpend = document.getElementById('totColSpend');
+    if (elSpend) elSpend.innerText = totSpend.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ₽';
+
+    const elImp = document.getElementById('totColImp');
+    if (elImp) elImp.innerText = totImp.toLocaleString('ru-RU');
+
+    const elClicks = document.getElementById('totColClicks');
+    if (elClicks) elClicks.innerText = totClicks.toLocaleString('ru-RU');
+
+    const elCtr = document.getElementById('totColCtr');
+    if (elCtr) elCtr.innerText = totCtr.toFixed(2) + '%';
+
+    const elCpc = document.getElementById('totColCpc');
+    if (elCpc) elCpc.innerText = totCpc.toFixed(1) + ' ₽';
+
+    const elTargets = document.getElementById('totColTargets');
+    if (elTargets) elTargets.innerText = totTargets.toLocaleString('ru-RU');
+
+    const elCpa = document.getElementById('totColCpa');
+    if (elCpa) elCpa.innerText = totCpa > 0 ? Math.round(totCpa).toLocaleString('ru-RU') + ' ₽' : '—';
+
+    updateDynamicChart(filtered);
+  }
+
+  function setMonthFilter(m, btn) {
+    currentMonth = m;
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    initCampsTable();
+    filterTable();
+  }
+
+  function setChannelFilter(ch, btn) {
+    currentChannel = ch;
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterTable();
+  }
+
+  document.getElementById('campSearch').addEventListener('input', filterTable);
+
+  // Инициализация при загрузке страницы:
+  initCampsTable();
+  filterTable();
+</script>
+
+</body>
+</html>
