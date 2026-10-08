@@ -1060,16 +1060,15 @@ function updateGlobalToggleState() {
    Тёмная / Светлая тема
    ══════════════════════════════════════════════════════════════════════ */
 function getTheme() {
-  return localStorage.getItem("ds_report_theme") || "dark";
+  return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
 }
 
 function applyTheme(theme) {
   if (theme === "light") {
     document.documentElement.setAttribute("data-theme", "light");
   } else {
-    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", "dark");
   }
-  localStorage.setItem("ds_report_theme", theme);
 
   const isLight = theme === "light";
   const btnHeader = document.getElementById("themeBtnHeader");
@@ -1102,7 +1101,8 @@ function toggleTheme() {
 }
 
 // Применяем сохранённую тему
-applyTheme(getTheme());
+// При открытии страницы всегда включается светлая тема
+applyTheme("light");
 
 /* ══════════════════════════════════════════════════════════════════════
    Состояние: выбранный город

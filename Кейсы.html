@@ -126,25 +126,39 @@ nav.jump a.on small{color:var(--muted)}
 .filters{display:flex;flex-wrap:wrap;gap:9px;align-items:center;padding:8px 12px;background:color-mix(in srgb, var(--surface-2) 65%, var(--surface));border:1px dashed color-mix(in srgb, var(--accent) 35%, var(--line));border-radius:14px;transition:all .2s}
 .filters:hover{border-color:var(--accent)}
 
-/* Интерактивные чипы фильтров (статичные без анимации) */
-.f-chip{--c:var(--ink);position:relative;border:1.5px solid color-mix(in srgb, var(--c) 50%, var(--line));
+/* Интерактивные чипы фильтров (без подсветки и мерцания) */
+.f-chip{--c:var(--ink);position:relative;border:1.5px solid color-mix(in srgb, var(--c) 40%, var(--line));
   background:var(--surface);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;
-  color:var(--ink);transition:all .2s ease}
+  color:var(--ink);box-shadow:none;transition:all .2s ease}
 
 .f-chip:hover{
-  transform:translateY(-2px) scale(1.03);
   border-color:var(--c);
   color:var(--c);
-  box-shadow:0 6px 18px color-mix(in srgb, var(--c) 45%, transparent);
+  box-shadow:none;
+  transform:translateY(-1px);
 }
 
 .f-chip.active{
-  background:linear-gradient(135deg, color-mix(in srgb, var(--c) 22%, var(--surface)), var(--surface));
+  background:color-mix(in srgb, var(--c) 14%, var(--surface));
   color:var(--ink);
   border-color:var(--c);
-  border-width:2px;
-  transform:translateY(-1px);
-  box-shadow:0 0 16px 3px color-mix(in srgb, var(--c) 55%, transparent);
+  border-width:1.5px;
+  font-weight:700;
+  box-shadow:none;
+  transform:none;
+}
+
+/* Кнопка «Все» — нейтральная спокойная плашка без подсветки */
+.f-chip[data-filter="all"]{
+  --c:var(--muted);
+  border-color:var(--line);
+}
+.f-chip[data-filter="all"].active{
+  background:var(--surface);
+  border-color:var(--line);
+  color:var(--ink);
+  box-shadow:none;
+  transform:none;
 }
 
 /* Секции категорий */
