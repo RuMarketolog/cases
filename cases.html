@@ -273,6 +273,34 @@ section{display:grid;gap:16px;scroll-margin-top:86px}
 .action-btn.secondary{background:var(--surface);border-color:color-mix(in srgb, var(--c) 30%, var(--line));color:var(--ink)}
 .action-btn.secondary:hover{border-color:var(--c);color:var(--c);background:color-mix(in srgb, var(--c) 8%, var(--surface))}
 
+/* Три ссылки на дашборды светятся по очереди: один двухсекундный слот
+   на ссылку в шестисекундном цикле. Отрицательные задержки синхронизируют
+   цикл сразу после загрузки и сохраняют порядок hh.ru → ИТ → стоматология. */
+.dashboard-links .dashboard-link{
+  animation:dashboardLinkGlow 6s ease-in-out infinite;
+}
+.dashboard-links .dashboard-link:nth-child(2){animation-delay:-4s}
+.dashboard-links .dashboard-link:nth-child(3){animation-delay:-2s}
+@keyframes dashboardLinkGlow{
+  0%, 33.333%, 100%{
+    border-color:transparent;
+    box-shadow:0 3px 10px color-mix(in srgb, var(--c) 30%, transparent);
+  }
+  12%, 22%{
+    border-color:#fff;
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--c) 25%, var(--surface)),
+      0 0 24px 5px color-mix(in srgb, var(--c) 55%, transparent),
+      0 5px 14px color-mix(in srgb, var(--c) 40%, transparent);
+  }
+}
+/* При взаимодействии свечение уступает обычному hover и видимому фокусу. */
+.dashboard-links:hover .dashboard-link,
+.dashboard-links:focus-within .dashboard-link{animation:none}
+.dashboard-links .dashboard-link:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+@media (prefers-reduced-motion:reduce){
+  .dashboard-links .dashboard-link{animation:none;transition:none}
+}
+
 /* Toast */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--surface);padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;
   box-shadow:0 10px 28px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;z-index:99;opacity:0;transform:translateY(12px);transition:all .2s;pointer-events:none}
@@ -417,14 +445,14 @@ footer{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-be
           </div>
           <p class="case-desc">Материалы и демонстрация практического применения нейросетей, генеративного ИИ и автоматизации в маркетинговых процессах.</p>
           <div class="case-card-bot">
-            <div class="case-actions" style="flex-wrap:wrap;gap:8px;">
-              <a href="https://rumarketolog.github.io/cases/hh.ru.html" target="_blank" rel="noopener noreferrer" class="action-btn primary" title="Открыть HR-аналитический дашборд рынка труда">
+            <div class="case-actions dashboard-links" style="flex-wrap:wrap;gap:8px;">
+              <a href="https://rumarketolog.github.io/cases/hh.ru.html" target="_blank" rel="noopener noreferrer" class="action-btn primary dashboard-link" title="Открыть HR-аналитический дашборд рынка труда">
                 📊 hh.ru ↗
               </a>
-              <a href="https://rumarketolog.github.io/cases/ИТ-компания.html" target="_blank" rel="noopener noreferrer" class="action-btn primary" title="Открыть B2B EdTech кейс ИТ-компании">
+              <a href="https://rumarketolog.github.io/cases/ИТ-компания.html" target="_blank" rel="noopener noreferrer" class="action-btn primary dashboard-link" title="Открыть B2B EdTech кейс ИТ-компании">
                 💻 ИТ-компания ↗
               </a>
-              <a href="https://rumarketolog.github.io/cases/Стоматологическая%20клиника.html" target="_blank" rel="noopener noreferrer" class="action-btn primary" title="Открыть аналитический дашборд стоматологической клиники">
+              <a href="https://rumarketolog.github.io/cases/Стоматологическая%20клиника.html" target="_blank" rel="noopener noreferrer" class="action-btn primary dashboard-link" title="Открыть аналитический дашборд стоматологической клиники">
                 🦷 Стоматологическая клиника ↗
               </a>
             </div>
