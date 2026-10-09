@@ -341,8 +341,9 @@ footer{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-be
       </button>
     </div>
 
-    <!-- 26 материалов: 1 ИИ + 10 кейсов + 1 ребрендинг + 9 сайтов + 5 публикаций.
-         При изменении каталога обновляются заголовок, навигация, фильтры и сводка. -->
+    <!-- 26 карточек: 1 ИИ + 10 кейсов + 1 карточка ребрендинга + 9 сайтов + 5 публикаций.
+         Подписи ребрендинга показывают 4 проекта/материала по уточнению владельца;
+         количество карточек и результаты фильтрации считаются отдельно. -->
     <h1>Портфолио Морозова Виталия: <em>26 проектов и кейсов</em> с верифицированными материалами</h1>
 
     <ul class="theses">
@@ -359,6 +360,7 @@ footer{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-be
       <a href="#sec-rebrand" class="th" style="--c:var(--c-rebrand)">
         <span class="ic" aria-hidden="true">🎨</span>
         <b>Ребрендинг продукта</b>
+        <!-- Количество проектов в разделе, представленном одной общей карточкой. -->
         <span>4 проекта · позиционирование, УТП и переупаковка</span>
       </a>
       <a href="#sec-sites" class="th" style="--c:var(--c-web)">
@@ -386,6 +388,7 @@ footer{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-be
     </a>
     <a href="#sec-rebrand" data-sec="sec-rebrand" style="--c:var(--c-rebrand)">
       <span class="ji" aria-hidden="true">🎨</span>
+      <!-- Навигация повторяет уточнённое количество проектов ребрендинга. -->
       <span class="jt"><b>Ребрендинг</b><small>4 проекта · упаковка</small></span>
     </a>
     <a href="#sec-sites" data-sec="sec-sites" style="--c:var(--c-web)">
@@ -672,6 +675,7 @@ footer{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-be
           </div>
         </div>
         <div class="sec-meta">
+          <!-- Уточнённая подпись раздела; общая карточка со ссылкой сохранена. -->
           <span class="sec-count-tag">4 материала</span>
           <span class="chev" aria-hidden="true">▾</span>
         </div>
@@ -995,6 +999,7 @@ footer{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-be
       </div>
       <div class="sum-card" style="--c:var(--c-rebrand)">
         <span class="label">🎨 Ребрендинг</span>
+        <!-- Сводка показывает те же 4 материала, что и заголовок раздела. -->
         <span class="val">4</span>
         <span class="sub">Упаковка и позиционирование</span>
       </div>
